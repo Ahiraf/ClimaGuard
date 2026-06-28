@@ -1,0 +1,66 @@
+# ClimaGuard — Cloud Build pipeline → Cloud Run
+#
+# Usage:
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions=_REGION=asia-south1,_SERVICE=climaguard
+#
+# Prerequisites (one-time):
+#   gcloud services enable run.googleapis.com cloudbuild.googleapis.com \
+#     secretmanager.googleapis.com artifactregistry.googleapis.com
+#   gcloud artifacts repositories create climaguard --repository-format=docker --location=$_REGION
+#   Secrets must exist in Secret Manager: GEMINI_API_KEY, GEMINI_API_KEY_2,
+#   GEMINI_API_KEY_3, OPENAI_API_KEY (and granted to the Cloud Run runtime SA).
+
+substitutions:
+  _REGION: asia-south1
+  _SERVICE: climaguard
+  _REPO: climaguard
+
+steps:
+  # 1. Build the Docker image
+  - name: gcr.io/cloud-builders/docker
+    id: build
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$SHORT_SHA
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:latest
+      - .
+
+  # 2. Push to Artifact Registry
+  - name: gcr.io/cloud-builders/docker
+    id: push
+    args:
+      - push
+      - --all-tags
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}
+
+  # 3. Deploy to Cloud Run with secrets attached
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: deploy
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$SHORT_SHA
+      - --region=${_REGION}
+      - --platform=managed
+      - --allow-unauthenticated
+      - --memory=512Mi
+      - --cpu=1
+      - --min-instances=1
+      - --max-instances=10
+      - --port=3000
+      - --set-secrets=GEMINI_API_KEY=GEMINI_API_KEY:latest,GEMINI_API_KEY_2=GEMINI_API_KEY_2:latest,GEMINI_API_KEY_3=GEMINI_API_KEY_3:latest,OPENAI_API_KEY=OPENAI_API_KEY:latest
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:$SHORT_SHA
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_SERVICE}:latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+timeout: 1200s

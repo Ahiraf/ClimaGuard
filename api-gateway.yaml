@@ -1,0 +1,93 @@
+swagger: "2.0"
+info:
+  title: ClimaGuard API
+  description: Child climate risk analysis API with rate limiting
+  version: "1.0"
+host: climaguard-api.endpoints.YOUR_PROJECT_ID.cloud.goog
+schemes:
+  - https
+produces:
+  - application/json
+
+x-google-backend:
+  address: https://YOUR_CLOUD_RUN_URL
+
+paths:
+  /api/risk-analysis:
+    post:
+      summary: Analyze climate risk for a child at a location
+      operationId: riskAnalysis
+      x-google-quota:
+        metricCosts:
+          risk-analysis-requests: 1
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required: [lat, lon, countryName, language, childAge]
+            properties:
+              lat: { type: number }
+              lon: { type: number }
+              countryName: { type: string }
+              language: { type: string }
+              childAge: { type: string }
+              childName: { type: string }
+      responses:
+        200:
+          description: Risk analysis result
+        429:
+          description: Rate limit exceeded
+
+  /api/health-chat:
+    post:
+      summary: AI health advisor chat
+      operationId: healthChat
+      x-google-quota:
+        metricCosts:
+          health-chat-requests: 1
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: AI health advice
+
+  /api/vision-analysis:
+    post:
+      summary: Analyze environment or symptom photo
+      operationId: visionAnalysis
+      x-google-quota:
+        metricCosts:
+          vision-requests: 1
+      consumes:
+        - multipart/form-data
+      responses:
+        200:
+          description: Vision analysis result
+
+x-google-quota-definitions:
+  - name: risk-analysis-quota
+    metric: risk-analysis-requests
+    displayName: Risk Analysis Requests
+    unit: "1/min/{project}"
+    values:
+      STANDARD: 30   # 30 requests per minute per project
+
+  - name: health-chat-quota
+    metric: health-chat-requests
+    displayName: Health Chat Requests
+    unit: "1/min/{project}"
+    values:
+      STANDARD: 60
+
+  - name: vision-quota
+    metric: vision-requests
+    displayName: Vision Analysis Requests
+    unit: "1/min/{project}"
+    values:
+      STANDARD: 20
