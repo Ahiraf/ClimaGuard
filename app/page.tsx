@@ -225,12 +225,12 @@ export default function Home() {
               { icon: Map,         label: "BigQuery + Cloud Storage", desc: "Global risk analytics and PDF report export" },
               { icon: Siren,       label: "Offline Emergency Helplines", desc: "Tap-to-call helplines for all 25 countries — bundled, no network needed" },
             ].map(p => (
-              <div key={p.label} className="bg-white/5 border border-white/10 rounded-xl p-5 text-center">
+              <div key={p.label} className="bg-white/5 border border-white/10 rounded-xl p-4 sm:p-5 text-center overflow-hidden min-h-[140px] sm:min-h-[160px]">
                 <div className="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <p.icon className="w-4 h-4 text-blue-400" />
                 </div>
-                <div className="text-white font-semibold text-sm mb-1">{p.label}</div>
-                <div className="text-slate-400 text-xs leading-relaxed">{p.desc}</div>
+                <div className="text-white font-semibold text-xs sm:text-sm mb-1 line-clamp-2">{p.label}</div>
+                <div className="text-slate-400 text-xs leading-relaxed line-clamp-3">{p.desc}</div>
               </div>
             ))}
           </div>
