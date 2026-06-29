@@ -11,7 +11,7 @@ export default function HelplineBar() {
 
   return (
     <div className="bg-[#0f2844] border-b border-blue-900/50">
-      <div className="max-w-6xl mx-auto px-6 py-2.5 flex items-center gap-3 flex-wrap">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 flex items-center gap-3 flex-wrap">
         <button
           onClick={() => setOpen((o) => !o)}
           className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-sm"

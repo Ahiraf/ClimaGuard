@@ -15,17 +15,17 @@ export default function VisionPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Navbar */}
       <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-6xl mx-auto px-6 py-3.5 flex items-center gap-3">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
           <Link href="/" className="text-slate-400 hover:text-white transition p-1">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div className="w-px h-4 bg-slate-600" />
           <Shield className="text-blue-400 w-5 h-5" />
           <span className="font-bold text-white">ClimaGuard</span>
-          <span className="text-slate-500 text-sm ml-1 flex items-center gap-1.5">
+          <span className="hidden sm:flex text-slate-500 text-sm ml-1 items-center gap-1.5">
             / <Camera className="w-3.5 h-3.5 text-violet-400" /> Vision Analyzer
           </span>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto hidden sm:flex items-center gap-2">
             <Link href="/dashboard" className="text-xs text-slate-300 hover:text-white border border-slate-600 hover:border-slate-400 px-3 py-1.5 rounded-lg transition">
               Risk Dashboard
             </Link>
@@ -36,13 +36,13 @@ export default function VisionPage() {
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 bg-violet-50 border border-violet-200 text-violet-700 text-xs px-3 py-1.5 rounded-lg font-medium mb-4">
             <Camera className="w-3.5 h-3.5" /> Powered by Google Gemini Vision
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Gemini Vision Analyzer</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Gemini Vision Analyzer</h1>
           <p className="text-slate-500 max-w-2xl leading-relaxed">
             Upload a photo of a skin condition, flood damage, smoke, or surroundings.
             Gemini analyzes the image and responds in your local language with child-specific guidance.
@@ -50,7 +50,7 @@ export default function VisionPage() {
         </div>
 
         {/* Child + Country context */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-6">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-sm mb-6">
           <h2 className="font-semibold text-slate-900 mb-4 text-sm uppercase tracking-wide">Context for Analysis</h2>
           <div className="grid md:grid-cols-3 gap-4">
             {/* Country / Language */}

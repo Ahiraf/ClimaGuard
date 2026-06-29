@@ -208,14 +208,14 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-50">
       {/* Navbar */}
       <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center gap-3">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
           <Link href="/" className="text-slate-400 hover:text-white transition p-1">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div className="w-px h-4 bg-slate-600" />
           <Shield className="text-blue-400 w-5 h-5" />
           <span className="font-bold text-white">ClimaGuard</span>
-          <span className="text-slate-500 text-sm ml-1">/ Risk Dashboard</span>
+          <span className="hidden sm:inline text-slate-500 text-sm ml-1">/ Risk Dashboard</span>
           <div className="ml-auto">
             <Link href="/health" className="text-xs text-slate-300 hover:text-white transition border border-slate-600 hover:border-slate-400 px-3 py-1.5 rounded-lg">
               Health Advisor
@@ -224,17 +224,17 @@ export default function Dashboard() {
         </div>
       </nav>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Page header */}
-        <div className="mb-7">
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">Child Climate Risk Assessment</h1>
-          <p className="text-sm text-slate-500">Real-time hazard analysis · Gemini AI · Open-Meteo weather data · GPS-precise location</p>
+        <div className="mb-6 sm:mb-7">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">Child Climate Risk Assessment</h1>
+          <p className="text-xs sm:text-sm text-slate-500">Real-time hazard analysis · Gemini AI · Open-Meteo weather data · GPS-precise location</p>
         </div>
 
         <OfflineReportBanner />
 
         {/* Form Card */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-7 mb-6 shadow-sm">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-7 mb-6 shadow-sm">
           <div className="flex items-center gap-2 mb-6 pb-5 border-b border-slate-100">
             <div className="w-8 h-8 bg-[#0f2844] rounded-lg flex items-center justify-center">
               <Globe className="w-4 h-4 text-blue-300" />
@@ -292,19 +292,19 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-lg font-medium">
                 AI responds in: {selectedCountry.language}
               </span>
-              <span className="text-xs bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg">
+              <span className="text-xs bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg truncate max-w-[200px] sm:max-w-none">
                 {location.displayName}
               </span>
             </div>
             <button
               onClick={analyze}
               disabled={loading}
-              className="bg-[#0f2844] hover:bg-[#1a3a6b] text-white px-7 py-2.5 rounded-xl font-semibold transition disabled:opacity-50 flex items-center gap-2 shadow-sm text-sm"
+              className="w-full sm:w-auto bg-[#0f2844] hover:bg-[#1a3a6b] text-white px-7 py-2.5 rounded-xl font-semibold transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm text-sm"
             >
               {loading
                 ? <><RefreshCw className="w-4 h-4 animate-spin" /> Analyzing with Gemini AI...</>

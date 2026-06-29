@@ -197,20 +197,20 @@ function HealthAdvisorContent() {
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Navbar */}
       <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-4xl mx-auto px-6 py-3.5 flex items-center gap-3">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
           <Link href="/dashboard" className="text-slate-400 hover:text-white transition p-1">
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div className="w-px h-4 bg-slate-600" />
           <Shield className="text-blue-400 w-5 h-5" />
           <span className="font-bold text-white">ClimaGuard</span>
-          <span className="text-slate-500 text-sm ml-1 flex items-center gap-1.5">
+          <span className="hidden sm:flex text-slate-500 text-sm ml-1 items-center gap-1.5">
             / <Heart className="w-3.5 h-3.5 text-red-400" /> Health Advisor
           </span>
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-6 py-6 w-full flex flex-col flex-1">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 w-full flex flex-col flex-1">
         {/* Settings bar */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 mb-4 shadow-sm">
           <div className="grid md:grid-cols-3 gap-4 items-end">

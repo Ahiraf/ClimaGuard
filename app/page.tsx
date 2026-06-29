@@ -86,7 +86,7 @@ export default function Home() {
 
       {/* Navbar */}
       <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Shield className="text-blue-300 w-6 h-6" />
             <span className="text-xl font-bold text-white tracking-tight">ClimaGuard</span>
@@ -108,22 +108,22 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="bg-[#0f2844] text-white pt-16 pb-8">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-blue-900/60 border border-blue-700/50 text-blue-300 text-xs px-4 py-2 rounded-full mb-8 font-medium tracking-wide uppercase">
-            <Zap className="w-3.5 h-3.5" /> Powered by Google Gemini API · Based on UNICEF Climate Risk Report 2026
+      <section className="bg-[#0f2844] text-white pt-12 sm:pt-16 pb-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <div className="inline-flex items-center gap-2 bg-blue-900/60 border border-blue-700/50 text-blue-300 text-xs px-3 sm:px-4 py-2 rounded-full mb-6 sm:mb-8 font-medium tracking-wide uppercase flex-wrap justify-center">
+            <Zap className="w-3.5 h-3.5 shrink-0" /> <span>Powered by Google Gemini API · UNICEF Climate Risk Report 2026</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6 tracking-tight">
             Protecting Children from<br />
             <span className="text-blue-400">Climate Hazards</span>
           </h1>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2 sm:px-0">
             Real-time AI-powered climate risk alerts and health guidance for children in the world's most vulnerable regions — in their own language, even offline.
           </p>
         </div>
 
         {/* 4 Main Feature Buttons — overlap hero */}
-        <div className="max-w-6xl mx-auto px-6 pb-0">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-0">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Calculate Risk */}
             <Link href="/dashboard" className="group bg-white/10 hover:bg-blue-500 border border-white/20 hover:border-blue-400 rounded-2xl p-6 text-left transition-all duration-200 hover:shadow-xl hover:shadow-blue-900/30 hover:-translate-y-1">
@@ -189,8 +189,8 @@ export default function Home() {
       </section>
 
       {/* Stats */}
-      <section className="bg-slate-800 py-14">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="bg-slate-800 py-10 sm:py-14">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">{s.value}</div>
@@ -201,7 +201,7 @@ export default function Home() {
       </section>
 
       {/* ── ABOUT SECTION ── */}
-      <section id="about" className="max-w-6xl mx-auto px-6 py-20">
+      <section id="about" className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-4 py-2 rounded-full mb-5 font-semibold uppercase tracking-wide">
             <BookOpen className="w-3.5 h-3.5" /> About ClimaGuard
@@ -215,9 +215,9 @@ export default function Home() {
         </div>
 
         {/* What powers it */}
-        <div className="bg-[#0f2844] rounded-2xl p-8 mb-10">
+        <div className="bg-[#0f2844] rounded-2xl p-5 sm:p-8 mb-10">
           <h3 className="text-white font-bold text-xl mb-6 text-center">What Powers ClimaGuard</h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
             {[
               { icon: Brain,       label: "Google Gemini 2.5 Flash",  desc: "Primary AI — text, vision, audio, function calling" },
               { icon: Globe,       label: "Open-Meteo API",           desc: "Free real-time weather: temp, humidity, UV, precipitation" },
@@ -305,8 +305,8 @@ export default function Home() {
       </section>
 
       {/* Countries */}
-      <section className="bg-slate-100 py-16">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+      <section className="bg-slate-100 py-10 sm:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-2xl font-bold text-slate-900 mb-3">Built for the World's Most Vulnerable Children</h2>
           <p className="text-slate-500 mb-8">Covering all UNICEF high-risk countries with local language support</p>
           <div className="flex flex-wrap justify-center gap-2.5">
@@ -319,8 +319,8 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#0f2844] py-20">
-        <div className="max-w-3xl mx-auto px-6 text-center">
+      <section className="bg-[#0f2844] py-14 sm:py-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <Shield className="w-10 h-10 text-blue-400 mx-auto mb-5" />
           <h2 className="text-3xl font-bold text-white mb-4">Start Protecting Your Child Now</h2>
           <p className="text-slate-300 mb-10 leading-relaxed">
@@ -349,7 +349,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-slate-900 py-10">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <Shield className="text-blue-400 w-5 h-5" />
             <span className="font-bold text-white">ClimaGuard</span>
