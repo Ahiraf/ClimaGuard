@@ -1,7 +1,7 @@
 # ClimaGuard 🛡️
 
 **AI-powered climate safety platform for children in the world's most vulnerable regions.**
-Powered by **Google Gemini API** · Deployed on **Google Cloud** · 25 countries · 40+ languages · works offline.
+Powered by **Google Gemini API** · Deployed on **Vercel** · 25 countries · 40+ languages · works offline.
 
 > Based on the *UNICEF Children's Climate Risk Report 2026* — which identified that 1.1 billion children live in countries at extreme climate risk, with no tool providing child-specific, real-time, local-language guidance during disasters.
 
@@ -39,7 +39,7 @@ A Next.js + Gemini-powered Progressive Web App that gives parents in 25 UNICEF h
 | Analytics | Google BigQuery |
 | Storage | Google Cloud Storage (PDF report backups) |
 | Notifications | Firebase Cloud Messaging |
-| Deployment | Google **Cloud Run** + **Cloud Build** + **Secret Manager** |
+| Deployment | **Vercel** (live) — Cloud Run + Cloud Build + Secret Manager config also included as an alternative |
 | Scheduled jobs | Firebase **Cloud Functions** (daily risk alerts) |
 | API edge | Google **API Gateway** (rate limiting) |
 | Fallback | OpenAI GPT-4o + Whisper (multi-provider resilience) |
@@ -72,11 +72,13 @@ Gemini 2.5 Flash is the primary AI across **five distinct capability paths** —
 
 ---
 
-## Google Cloud Deployment Details
+## Google Cloud Services
+
+The live app is hosted on **Vercel**, with Google services powering the AI and data backend. A Cloud Run deployment path is also included as an alternative host.
 
 | Service | Purpose | Files |
 |---|---|---|
-| **Cloud Run** | App hosting (containerized Next.js standalone build) | `Dockerfile`, `cloudbuild.yaml` |
+| **Cloud Run** (alternative host) | Containerized Next.js standalone build — config included, not the live deployment | `Dockerfile`, `cloudbuild.yaml` |
 | **Cloud Build** | CI/CD — `git push` → build → deploy | `cloudbuild.yaml` |
 | **Secret Manager** | Stores `GEMINI_API_KEY`, `GEMINI_API_KEY_2`, `GEMINI_API_KEY_3`, `OPENAI_API_KEY` | bound at deploy time |
 | **Firebase Firestore** | Saves anonymous user reports + powers heatmap | `lib/firestoreReports.ts` |
@@ -114,7 +116,22 @@ npm run dev
 
 ---
 
-## Deploying to Google Cloud Run
+## Deploying
+
+### Vercel (live deployment)
+
+The app is deployed on Vercel. To reproduce:
+
+```bash
+# 1. Push this repo to GitHub (already public for judging)
+# 2. Import the repo at https://vercel.com/new
+# 3. Add environment variables in Project Settings → Environment Variables:
+#      GEMINI_API_KEY, GEMINI_API_KEY_2, GEMINI_API_KEY_3, OPENAI_API_KEY,
+#      and NEXT_PUBLIC_FIREBASE_*  (see .env.example)
+# 4. Deploy — Vercel builds the Next.js app and prints the live HTTPS URL
+```
+
+### Google Cloud Run (alternative)
 
 **One-time setup:**
 
