@@ -12,10 +12,34 @@ async function fetchWeather(lat: number, lon: number) {
 }
 
 function getRiskFromWeather(temp: number, precip: number, weatherCode: number): string {
-  if (weatherCode >= 95 || precip > 20) return "CRITICAL";
+  if (weatherCode >= 95 || precip > 20 || temp >= 42) return "CRITICAL";
   if (temp >= 38 || precip > 10 || weatherCode >= 80) return "HIGH";
   if (temp >= 35 || precip > 3) return "MEDIUM";
   return "LOW";
+}
+
+// Hyperlocal, age-specific one-line action for the push body. See feature #4.
+function ageBand(childAge: string): "infant" | "toddler" | "child" | "teen" {
+  if (childAge === "Under 1") return "infant";
+  const n = parseInt(childAge, 10);
+  if (isNaN(n) || n <= 4) return "toddler";
+  if (n <= 12) return "child";
+  return "teen";
+}
+
+function actionTip(risk: string, temp: number, precip: number, childAge: string): string {
+  const band = ageBand(childAge);
+  const heat = temp >= 35;
+  if (heat) {
+    if (band === "infant") return "Keep baby cool & shaded; feed milk more often.";
+    if (band === "toddler") return "Keep indoors; small sips of water often.";
+    return "Rest in shade; hydrate regularly.";
+  }
+  if (precip > 3) {
+    if (band === "infant") return "Keep baby dry; use only boiled/treated water.";
+    return "Avoid floodwater; treat drinking water; watch for diarrhoea.";
+  }
+  return risk === "CRITICAL" ? "Move to a safe indoor space now." : "Check the app for age-specific steps.";
 }
 
 // Runs every day at 7 AM UTC
@@ -53,12 +77,13 @@ export const dailyRiskAlerts = functions.scheduler.onSchedule({
       const emoji = risk === "CRITICAL" ? "🚨" : risk === "HIGH" ? "⚠️" : "⚡";
       const name = childName || "Your child";
       const age = childAge ? ` (age ${childAge})` : "";
+      const tip = actionTip(risk, temp, precip, childAge || "5");
 
       await messaging.send({
         token: fcmToken,
         notification: {
-          title: `${emoji} ClimaGuard: ${risk} Risk Alert`,
-          body: `${name}${age} in ${country} — ${temp}°C, ${precip}mm rain. Open app for safety guidance.`,
+          title: `${emoji} ClimaGuard: ${risk} Risk for ${name}`,
+          body: `${name}${age} in ${country} — ${temp}°C${precip > 0 ? `, ${precip}mm rain` : ""}. ${tip}`,
         },
         data: {
           riskLevel: risk,
