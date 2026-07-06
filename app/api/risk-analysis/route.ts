@@ -7,7 +7,7 @@ const RISK_SYSTEM_INSTRUCTION = "You are ClimaGuard, an AI assistant that protec
 
 export async function POST(req: NextRequest) {
   try {
-    const { lat, lon, countryName, language, childAge, childName } = await req.json();
+    const { lat, lon, countryName, language, childAge, childName, childConditions } = await req.json();
 
     const weather = await getWeatherData(lat, lon);
     const overallRisk = getOverallRisk(weather.hazards);
@@ -31,7 +31,7 @@ Overall Risk Level: ${overallRisk}
 
 Child Information:
 - Name: ${childName || "the child"}
-- Age: ${childAge} years old
+- Age: ${childAge} years old${childConditions?.trim() ? `\n- Known health conditions (factor into all guidance): ${childConditions.trim()}` : ""}
 
 Please respond ENTIRELY in ${language}. Generate a personalized child safety report with:
 1. A brief risk summary for this specific child's age

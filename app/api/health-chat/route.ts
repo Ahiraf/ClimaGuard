@@ -7,10 +7,11 @@ You are NOT a doctor. Always provide first-response guidance only, flag emergenc
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, language, countryName, activeHazards, childAge } = await req.json();
+    const { messages, language, countryName, activeHazards, childAge, childConditions } = await req.json();
 
     const lastMessage = messages[messages.length - 1].text;
-    const context = `[Context: Child is ${childAge} years old, located in ${countryName}. Active climate hazards: ${activeHazards?.join(", ") || "none reported"}. Please respond entirely in ${language}.]`;
+    const conditionsNote = childConditions?.trim() ? ` Known health conditions: ${childConditions.trim()}.` : "";
+    const context = `[Context: Child is ${childAge} years old, located in ${countryName}.${conditionsNote} Active climate hazards: ${activeHazards?.join(", ") || "none reported"}. Please respond entirely in ${language}.]`;
     const fullPrompt = `${HEALTH_SYSTEM_INSTRUCTION}\n\n${context}\n\n${lastMessage}`;
 
     const text = await withGeminiFallback(async (client) => {

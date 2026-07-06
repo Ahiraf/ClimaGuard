@@ -8,6 +8,9 @@ import { saveReportOffline, getOfflineReportList, CachedReport } from "@/lib/off
 import { getFCMToken, onFCMMessage, ensureAnonymousAuth } from "@/lib/firebase";
 import OfflineReportBanner from "@/components/OfflineReportBanner";
 import VisionAnalyzer from "@/components/VisionAnalyzer";
+import SpeakButton from "@/components/SpeakButton";
+import EmergencyActionBanner from "@/components/EmergencyActionBanner";
+import OfflineGuidancePacks from "@/components/OfflineGuidancePacks";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
 import { saveReportToFirestore, getReportsFromFirestore, FirestoreReport } from "@/lib/firestoreReports";
 
@@ -58,6 +61,7 @@ export default function Dashboard() {
   const [location, setLocation] = useState<LocationResult>(defaultLocation);
   const [childAge, setChildAge] = useState("5");
   const [childName, setChildName] = useState("");
+  const [childConditions, setChildConditions] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState("");
@@ -192,6 +196,7 @@ export default function Dashboard() {
           language: selectedCountry.language,
           childAge,
           childName,
+          childConditions,
         }),
       });
       const data = await res.json();
@@ -303,6 +308,20 @@ export default function Dashboard() {
           </div>
 
           <div className="mb-5">
+            <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">
+              Health Conditions <span className="normal-case font-normal">(optional — asthma, malnutrition, allergies…)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. asthma, on inhaler"
+              value={childConditions}
+              onChange={e => setChildConditions(e.target.value)}
+              className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 placeholder-slate-300 shadow-sm"
+            />
+            <p className="text-xs text-slate-400 mt-1.5">The AI weights heat, air-quality and hazard guidance around these conditions.</p>
+          </div>
+
+          <div className="mb-5">
             <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Precise Location</label>
             <LocationPicker
               onLocationChange={handleLocationChange}
@@ -339,8 +358,21 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Always-available offline first-response guide (works with no internet, first use) */}
+        <div className="mb-6">
+          <OfflineGuidancePacks childAge={childAge} langCode={selectedCountry.languageCode} />
+        </div>
+
         {result && risk && (
           <div className="space-y-5">
+            {/* Emergency action banner — only shows for HIGH/CRITICAL */}
+            <EmergencyActionBanner
+              risk={result.overallRisk}
+              countryCode={selectedCountry.code}
+              countryName={selectedCountry.name}
+              flag={selectedCountry.flag}
+            />
+
             {/* Risk Banner */}
             <div className={`${risk.bg} border ${risk.border} rounded-2xl overflow-hidden shadow-sm`}>
               <div className={`h-1.5 ${risk.bar} w-full`} />
@@ -412,6 +444,9 @@ export default function Dashboard() {
                 <div>
                   <h2 className="font-semibold text-slate-900 text-sm">Gemini AI Action Plan</h2>
                   <p className="text-xs text-slate-400">Personalized for {childName || "your child"} · {selectedCountry.language}</p>
+                </div>
+                <div className="ml-auto">
+                  <SpeakButton text={result.analysis} langCode={selectedCountry.languageCode} />
                 </div>
               </div>
               <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{result.analysis}</div>
@@ -527,7 +562,7 @@ export default function Dashboard() {
                 <div className="font-semibold text-slate-900 text-sm">Is your child showing symptoms?</div>
                 <div className="text-sm text-slate-500 mt-0.5">Use AI Health Advisor for climate-linked illness guidance</div>
               </div>
-              <Link href={`/health?country=${selectedCountry.code}&age=${childAge}&name=${childName}`}
+              <Link href={`/health?country=${selectedCountry.code}&age=${childAge}&name=${childName}&conditions=${encodeURIComponent(childConditions)}`}
                 className="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap shrink-0">
                 Health Advisor →
               </Link>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Shield, ArrowLeft, Send, Heart, AlertTriangle, Mic, MicOff, Loader2 } from "lucide-react";
 import { COUNTRIES, CountryInfo } from "@/lib/languages";
+import SpeakButton from "@/components/SpeakButton";
 
 type Message = { role: "user" | "assistant"; text: string };
 
@@ -22,6 +23,7 @@ function HealthAdvisorContent() {
   const countryCode = params.get("country") || "BD";
   const childAge = params.get("age") || "5";
   const childName = params.get("name") || "";
+  const childConditions = params.get("conditions") || "";
 
   const [selectedCountry, setSelectedCountry] = useState<CountryInfo>(
     COUNTRIES.find(c => c.code === countryCode) || COUNTRIES[0]
@@ -181,6 +183,7 @@ function HealthAdvisorContent() {
           language: selectedCountry.language,
           countryName: selectedCountry.name,
           childAge: age,
+          childConditions,
           activeHazards: ["Flood Risk", "Extreme Heat", "Air Pollution"],
         }),
       });
@@ -290,12 +293,17 @@ function HealthAdvisorContent() {
                     <span className="text-white text-xs font-bold">G</span>
                   </div>
                 )}
-                <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
+                <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                   msg.role === "user"
                     ? "bg-[#0f2844] text-white rounded-tr-sm"
                     : "bg-slate-50 text-slate-800 border border-slate-200 rounded-tl-sm"
                 }`}>
-                  {msg.text}
+                  <div className="whitespace-pre-wrap">{msg.text}</div>
+                  {msg.role === "assistant" && (
+                    <div className="mt-2.5">
+                      <SpeakButton text={msg.text} langCode={selectedCountry.languageCode} label="Listen" />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

@@ -34,7 +34,10 @@ async function handleFunctionCall(name: string, args: Record<string, number>) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { lat, lon, countryName, language, childAge, childName } = await req.json();
+    const { lat, lon, countryName, language, childAge, childName, childConditions } = await req.json();
+    const conditionsLine = childConditions?.trim()
+      ? `\nChild's known health conditions (factor these into every recommendation): ${childConditions.trim()}`
+      : "";
 
     const weatherTool: Tool = {
       functionDeclarations: [
@@ -45,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     const prompt = `
 Location: ${countryName} (lat: ${lat}, lon: ${lon})
-Child: ${childName || "the child"}, Age: ${childAge} years old
+Child: ${childName || "the child"}, Age: ${childAge} years old${conditionsLine}
 Respond entirely in: ${language}
 
 Use the getCurrentWeather and getAirQuality tools to get live conditions, then generate a personalized child safety report with:
