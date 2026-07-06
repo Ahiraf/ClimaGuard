@@ -26,6 +26,14 @@ A Next.js + Gemini-powered Progressive Web App that gives parents in 25 UNICEF h
 5. **Global Risk Heatmap** — BigQuery-powered world map of risk events
 6. **PDF report export** — share with rescue workers, schools, doctors
 
+**Accessibility & resilience features:**
+7. **Voice read-aloud** — every action plan and health reply can be read aloud in the local language (offline, browser speech synthesis) for low-literacy parents
+8. **Emergency call banner** — HIGH/CRITICAL risk shows a one-tap call to the local emergency number
+9. **Offline first-use guide** — age-banded first-response steps for heat, flood, air pollution, and cyclone that work with zero network on first launch
+10. **SMS/USSD fallback** (`app/api/sms/route.ts`) — Twilio-compatible endpoint bringing guidance to feature phones with no data
+11. **Health-condition personalization** — optional conditions (asthma, malnutrition) weight the AI guidance
+12. **Crowdsourced community reports** — families share on-the-ground conditions on the risk map
+
 ---
 
 ## Technologies Used
@@ -59,6 +67,7 @@ Gemini 2.5 Flash is the primary AI across **five distinct capability paths** —
 | `app/api/vision-analysis/route.ts` | **Multimodal vision** (`inlineData`) — analyzes rash photos or flood damage | Parents can't always describe; a photo + child age + country gives instant triage |
 | `app/api/voice-transcribe/route.ts` | **Multilingual audio transcription** — hold-mic in any language | Many parents in disaster zones can't type their language quickly; voice is faster |
 | `app/api/risk-analysis/route.ts` (v1) | **Text generation** with system instruction for age-appropriate guidance | Risk reports must be tailored to whether the child is an infant, toddler, or teen |
+| `app/api/sms/route.ts` | **Short-form generation** — condenses live guidance into a <300-char SMS in the local language | Reaches feature phones with no smartphone/data; Twilio-webhook compatible |
 
 **Innovative reliability layer (`lib/geminiWithFallback.ts`):**
 - Three Gemini API keys in priority order — rotates on 429/403/quota/rate-limit errors
@@ -182,7 +191,7 @@ app/
   health/               AI symptom advisor (chat + voice)
   vision/               standalone Gemini Vision Analyzer
   heatmap/              global BigQuery risk map
-  api/                  7 Gemini- and GCP-backed API routes
+  api/                  8 Gemini- and GCP-backed API routes (incl. SMS fallback)
 components/             LocationPicker, MapView, VisionAnalyzer, EmergencyHelplines, HelplineBar, ...
 lib/
   gemini.ts             model factories

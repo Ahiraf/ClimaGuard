@@ -45,6 +45,15 @@ Two design principles are non-negotiable and enforced across the codebase: **gui
 age-appropriate**, and **responses are always in the user's local language, never silently
 defaulting to English.**
 
+**Accessibility and reach.** Several features exist specifically to serve the hardest-to-reach
+users: **voice read-aloud** of every action plan (browser speech synthesis, works offline) for
+low-literacy and illiterate parents; a high-visibility **emergency banner with one-tap call** to the
+local emergency number when risk is HIGH/CRITICAL; an **offline first-use guide** with age-banded
+first-response steps that works with zero network on first launch; an **SMS/USSD fallback** so the
+service reaches feature phones with no smartphone or data; **health-condition personalization**
+(e.g. asthma, malnutrition) that weights guidance; and **crowdsourced community reports** so
+families share on-the-ground conditions.
+
 ## 3. Methodology
 
 **Architecture.** The frontend is a Next.js 16 (App Router) PWA in TypeScript + Tailwind. All AI
@@ -104,7 +113,26 @@ reliability, localization, and offline resilience.
 - **Multi-provider fallback** verified to recover from simulated Gemini quota errors without
   user-visible failure.
 
-## 6. Limitations & Future Work
+## 6. Sustainability & Distribution Model
+
+ClimaGuard is designed to outlive a demo and reach the families who need it most, without ever
+charging the parents who use it.
+
+- **Free forever for parents.** The consumer app is free and low-cost to run: weather data
+  (Open-Meteo) is free, hosting is a lightweight PWA, and AI cost per assessment is a fraction of a
+  cent on Gemini Flash. Multi-key rotation and caching keep costs predictable.
+- **Funded through institutions, not users.** The realistic path to sustainability is
+  **partnerships with UNICEF, national health/disaster agencies, NGOs, and school networks**, who
+  license a monitoring dashboard (many children, aggregate risk, alerting) while the parent-facing
+  app stays free.
+- **Distribution.** As an installable PWA it spreads by link with no app-store friction; the
+  **SMS/USSD channel** extends reach to non-smartphone users; and **crowdsourced community reports**
+  create a network effect — the product becomes more useful as adoption grows in a region.
+- **Environmental sustainability (Track B).** The app itself is low-footprint (no heavy training, no
+  always-on inference), and its purpose is climate adaptation — reducing the human cost of climate
+  hazards on the most vulnerable population.
+
+## 7. Limitations & Future Work
 
 **Limitations.**
 - ClimaGuard is a humanitarian first-response aid, **not a substitute for professional medical

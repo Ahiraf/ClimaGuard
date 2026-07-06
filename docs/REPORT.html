@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>REPORT</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="_print.css" />
+</head>
+<body>
+<h1 id="climaguard-project-report">ClimaGuard — Project Report</h1>
+<p><strong>SciBlitz AI Challenge 2026 · Track B: Environment &amp;
+Sustainability</strong> AI-powered climate safety platform for children
+in the world’s most vulnerable regions. Live: <em>(paste your Vercel
+URL)</em> · Repository: github.com/Ahiraf/ClimaGuard_</p>
+<hr />
+<h2 id="problem-statement">1. Problem Statement</h2>
+<p>The <em>UNICEF Children’s Climate Risk Report</em> identifies that
+<strong>1.1 billion children</strong> live in countries at extreme
+climate risk. Children are physiologically more vulnerable than adults
+to heat, air pollution, waterborne disease, and disaster trauma — a 44°C
+day or contaminated flood water endangers a toddler far faster than a
+healthy adult.</p>
+<p>Yet when a climate emergency strikes, the parent on the ground faces
+three urgent questions and has no single tool that answers them:</p>
+<ol type="1">
+<li><strong>Is this an emergency?</strong> — Is my child’s fever, rash,
+or breathing normal, or dangerous?</li>
+<li><strong>What do I do right now?</strong> — What are the immediate,
+correct first-response actions?</li>
+<li><strong>Who do I call?</strong> — What is the local emergency
+number?</li>
+</ol>
+<p>Existing weather apps report temperature but give no child-specific
+guidance. Medical chatbots assume typing ability, a stable connection,
+and English fluency. <strong>None</strong> combine live local hazard
+data, the child’s age, the local language, and an offline fallback for
+when the network drops mid-disaster — exactly when help is needed
+most.</p>
+<p><strong>ClimaGuard closes that gap</strong> for parents in 25
+UNICEF-designated high-risk countries.</p>
+<h2 id="proposed-solution">2. Proposed Solution</h2>
+<p>ClimaGuard is a <strong>Next.js Progressive Web App</strong> powered
+by <strong>Google Gemini 2.5 Flash</strong> that turns a phone into a
+child-climate first-responder. Six capabilities work together:</p>
+<ol type="1">
+<li><strong>Real-time child climate risk assessment</strong> — live
+weather + air quality is combined with the child’s age and location to
+produce an AI-generated, age-specific action plan.</li>
+<li><strong>AI Health Advisor</strong> — multi-turn symptom triage by
+voice or text, in 40+ languages.</li>
+<li><strong>Gemini Vision Analyzer</strong> — a photo of a rash, flood,
+or environment is classified for risk.</li>
+<li><strong>Offline mode</strong> — the last report, emergency tips, and
+tap-to-call helplines for every country are cached locally, so core
+guidance survives a network outage.</li>
+<li><strong>Global Risk Heatmap</strong> — a BigQuery-backed world map
+of aggregated risk events.</li>
+<li><strong>PDF report export</strong> — a shareable summary for rescue
+workers, schools, or doctors.</li>
+</ol>
+<p>Two design principles are non-negotiable and enforced across the
+codebase: <strong>guidance is always age-appropriate</strong>, and
+<strong>responses are always in the user’s local language, never
+silently defaulting to English.</strong></p>
+<p><strong>Accessibility and reach.</strong> Several features exist
+specifically to serve the hardest-to-reach users: <strong>voice
+read-aloud</strong> of every action plan (browser speech synthesis,
+works offline) for low-literacy and illiterate parents; a
+high-visibility <strong>emergency banner with one-tap call</strong> to
+the local emergency number when risk is HIGH/CRITICAL; an
+<strong>offline first-use guide</strong> with age-banded first-response
+steps that works with zero network on first launch; an <strong>SMS/USSD
+fallback</strong> so the service reaches feature phones with no
+smartphone or data; <strong>health-condition personalization</strong>
+(e.g. asthma, malnutrition) that weights guidance; and
+<strong>crowdsourced community reports</strong> so families share
+on-the-ground conditions.</p>
+<h2 id="methodology">3. Methodology</h2>
+<p><strong>Architecture.</strong> The frontend is a Next.js 16 (App
+Router) PWA in TypeScript + Tailwind. All AI calls run
+<strong>server-side</strong> through Next.js API routes, so API keys are
+never exposed to the client. A custom service worker
+(<code>public/sw.js</code>) plus a web manifest make the app installable
+and offline-capable.</p>
+<p><strong>Data flow (risk assessment).</strong> The user selects
+country and child age → the app fetches live weather and air quality
+from <strong>Open-Meteo</strong> (free, key-less) → Gemini is invoked
+with <strong>function calling</strong>, letting the model call
+<code>getCurrentWeather</code> and <code>getAirQuality</code> as real
+tools to fetch live data rather than hallucinate it → Gemini returns a
+structured, age-specific action plan in the selected country’s language
+→ the report is rendered, cached to <code>localStorage</code> for
+offline reuse, and optionally persisted to Firestore for the
+heatmap.</p>
+<p><strong>Reliability.</strong> <code>lib/geminiWithFallback.ts</code>
+rotates across three Gemini API keys on quota / rate- limit / 429 / 403
+errors, then falls back to <strong>OpenAI GPT-4o</strong> (text &amp;
+vision) and <strong>Whisper</strong> (audio) as a last resort. The
+vision route additionally detects safety refusals and retries with a
+text-only triage. This multi-provider resilience is critical: a demo or
+a real emergency cannot fail because one provider is momentarily
+unavailable.</p>
+<p><strong>Localization.</strong> <code>lib/languages.ts</code> maps 25
+countries to BCP-47 language codes and capital coordinates;
+<code>lib/emergencyContacts.ts</code> holds tap-to-call helplines for
+each. Every AI prompt injects both the child’s age and an instruction to
+respond entirely in the selected language.</p>
+<h2 id="ai-ml-approach">4. AI / ML Approach</h2>
+<p>Gemini 2.5 Flash is the central intelligence, used across
+<strong>five distinct capability paths</strong> — this is deliberate:
+the AI is not a peripheral feature but the core of every user-facing
+function.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Route</th>
+<th>Gemini capability</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api/risk-analysis-v2</code></td>
+<td><strong>Function calling</strong> — model calls live
+weather/air-quality tools</td>
+<td>Grounds guidance in real data instead of guesses</td>
+</tr>
+<tr>
+<td><code>api/health-chat</code></td>
+<td><strong>Multi-turn chat</strong> (<code>startChat</code> with
+history)</td>
+<td>Holds context across the follow-up questions a panicked parent
+asks</td>
+</tr>
+<tr>
+<td><code>api/vision-analysis</code></td>
+<td><strong>Multimodal vision</strong> (<code>inlineData</code>)</td>
+<td>Parents can’t always describe a symptom — a photo + age + country
+gives instant triage</td>
+</tr>
+<tr>
+<td><code>api/voice-transcribe</code></td>
+<td><strong>Multilingual audio transcription</strong></td>
+<td>Voice is faster than typing an unfamiliar script under stress</td>
+</tr>
+<tr>
+<td><code>api/risk-analysis</code> (v1)</td>
+<td><strong>Text generation</strong> with system instruction</td>
+<td>Age-tailored guidance — infant vs. toddler vs. teen</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prompt engineering.</strong> Prompts use a humanitarian
+first-response framing (not clinical diagnosis), always inject the
+child’s age, and hard-enforce local-language output. The transcription
+prompt instructs the model to detect and preserve the spoken language
+and script rather than translate or transliterate.</p>
+<p><strong>Why not train from scratch?</strong> The problem is reasoning
+over live, multilingual, multimodal context — exactly what a strong
+foundation model does well, and where a small custom model would be
+worse and slower to ship. Effort was invested where it adds real value:
+tool integration, multi-provider reliability, localization, and offline
+resilience.</p>
+<h2 id="results">5. Results</h2>
+<ul>
+<li><strong>Working end-to-end product</strong>, deployed publicly on
+Vercel and usable in-browser with no install or login friction
+(anonymous Firebase auth).</li>
+<li><strong>Five independent Gemini capabilities</strong> live and
+functioning: risk assessment, health chat, vision analysis, voice
+transcription, and age-specific text guidance.</li>
+<li><strong>25 countries</strong> with localized helplines and
+<strong>40+ languages</strong> supported end-to-end.</li>
+<li><strong>Offline mode</strong> verified: cached reports, emergency
+tips, and tap-to-call helplines remain available with the network
+disabled.</li>
+<li><strong>Multi-provider fallback</strong> verified to recover from
+simulated Gemini quota errors without user-visible failure.</li>
+</ul>
+<h2 id="sustainability-distribution-model">6. Sustainability &amp;
+Distribution Model</h2>
+<p>ClimaGuard is designed to outlive a demo and reach the families who
+need it most, without ever charging the parents who use it.</p>
+<ul>
+<li><strong>Free forever for parents.</strong> The consumer app is free
+and low-cost to run: weather data (Open-Meteo) is free, hosting is a
+lightweight PWA, and AI cost per assessment is a fraction of a cent on
+Gemini Flash. Multi-key rotation and caching keep costs
+predictable.</li>
+<li><strong>Funded through institutions, not users.</strong> The
+realistic path to sustainability is <strong>partnerships with UNICEF,
+national health/disaster agencies, NGOs, and school networks</strong>,
+who license a monitoring dashboard (many children, aggregate risk,
+alerting) while the parent-facing app stays free.</li>
+<li><strong>Distribution.</strong> As an installable PWA it spreads by
+link with no app-store friction; the <strong>SMS/USSD channel</strong>
+extends reach to non-smartphone users; and <strong>crowdsourced
+community reports</strong> create a network effect — the product becomes
+more useful as adoption grows in a region.</li>
+<li><strong>Environmental sustainability (Track B).</strong> The app
+itself is low-footprint (no heavy training, no always-on inference), and
+its purpose is climate adaptation — reducing the human cost of climate
+hazards on the most vulnerable population.</li>
+</ul>
+<h2 id="limitations-future-work">7. Limitations &amp; Future Work</h2>
+<p><strong>Limitations.</strong> - ClimaGuard is a humanitarian
+first-response aid, <strong>not a substitute for professional medical
+care</strong>; this is stated in-product. - AI guidance can be
+imperfect; vision triage from a single photo has inherent uncertainty. -
+Localization quality depends on Gemini’s per-language strength, which
+varies for low-resource languages. - Live features require connectivity;
+offline mode preserves the <em>last</em> guidance, not new analysis.</p>
+<p><strong>Future work.</strong> - On-device lightweight models for
+fully offline triage of the most common scenarios. - Clinician review of
+the guidance templates and a formal evaluation set per language. -
+SMS/USSD fallback for feature phones in the lowest-connectivity regions.
+- Partnerships with local child-health authorities to validate and
+localize emergency protocols.</p>
+<hr />
+<p><em>ClimaGuard is not a substitute for professional medical advice.
+It is a humanitarian first-response tool.</em></p>
+</body>
+</html>
