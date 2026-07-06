@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Shield, ArrowLeft, Send, Heart, AlertTriangle, Mic, MicOff, Loader2 } from "lucide-react";
-import { COUNTRIES, CountryInfo } from "@/lib/languages";
+import { COUNTRIES, CountryInfo, SUPPORTED_LANGUAGES, getLanguageCode } from "@/lib/languages";
 import SpeakButton from "@/components/SpeakButton";
 
 type Message = { role: "user" | "assistant"; text: string };
@@ -24,10 +24,11 @@ function HealthAdvisorContent() {
   const childAge = params.get("age") || "5";
   const childName = params.get("name") || "";
   const childConditions = params.get("conditions") || "";
+  const langParam = params.get("lang") || "";
 
-  const [selectedCountry, setSelectedCountry] = useState<CountryInfo>(
-    COUNTRIES.find(c => c.code === countryCode) || COUNTRIES[0]
-  );
+  const initialCountry = COUNTRIES.find(c => c.code === countryCode) || COUNTRIES[0];
+  const [selectedCountry, setSelectedCountry] = useState<CountryInfo>(initialCountry);
+  const [language, setLanguage] = useState<string>(langParam || initialCountry.language);
   const [age, setAge] = useState(childAge);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -40,7 +41,7 @@ function HealthAdvisorContent() {
   const [recordingSeconds, setRecordingSeconds] = useState(0);
 
   const bottomRef = useRef<HTMLDivElement>(null);
-  const prevLanguageRef = useRef(selectedCountry.language);
+  const prevLanguageRef = useRef(language);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -101,7 +102,7 @@ function HealthAdvisorContent() {
         try {
           const formData = new FormData();
           formData.append("audio", audioBlob, "recording.webm");
-          formData.append("language", selectedCountry.language);
+          formData.append("language", language);
 
           const res = await fetch("/api/voice-transcribe", {
             method: "POST",
@@ -146,7 +147,7 @@ function HealthAdvisorContent() {
         setVoiceError("Could not access microphone. Please try again.");
       }
     }
-  }, [selectedCountry, stopRecording]);
+  }, [language, stopRecording]);
 
   const toggleRecording = () => {
     if (isRecording) {
@@ -156,14 +157,20 @@ function HealthAdvisorContent() {
     }
   };
 
+  // Switching output language clears the conversation so context stays coherent.
+  const changeLanguage = (newLang: string) => {
+    if (isRecording) stopRecording();
+    if (newLang !== prevLanguageRef.current && messages.length > 0) {
+      setMessages([]);
+    }
+    prevLanguageRef.current = newLang;
+    setLanguage(newLang);
+  };
+
   const handleCountryChange = (code: string) => {
     const country = COUNTRIES.find(c => c.code === code)!;
-    if (isRecording) stopRecording();
     setSelectedCountry(country);
-    if (country.language !== prevLanguageRef.current && messages.length > 0) {
-      setMessages([]);
-      prevLanguageRef.current = country.language;
-    }
+    changeLanguage(country.language);
   };
 
   const sendMessage = async (text: string) => {
@@ -180,7 +187,7 @@ function HealthAdvisorContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: newMessages,
-          language: selectedCountry.language,
+          language,
           countryName: selectedCountry.name,
           childAge: age,
           childConditions,
@@ -241,13 +248,22 @@ function HealthAdvisorContent() {
                 ))}
               </select>
             </div>
-            <div className="flex gap-2 items-end">
-              <div className="bg-slate-50 border border-slate-200 px-3 py-2.5 rounded-xl text-xs text-slate-600 flex-1">
-                Responds in: <span className="font-semibold text-slate-800">{selectedCountry.language}</span>
+            <div>
+              <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">AI Language <span className="normal-case font-normal">({SUPPORTED_LANGUAGES.length}+)</span></label>
+              <div className="flex gap-2">
+                <select
+                  className="flex-1 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
+                  value={language}
+                  onChange={e => changeLanguage(e.target.value)}
+                >
+                  {SUPPORTED_LANGUAGES.map(l => (
+                    <option key={l.code} value={l.name}>{l.name}</option>
+                  ))}
+                </select>
+                {messages.length > 0 && (
+                  <button onClick={() => setMessages([])} className="text-xs text-red-500 hover:text-red-700 border border-red-200 hover:border-red-300 px-3 py-2.5 rounded-xl transition bg-red-50 shrink-0">Clear</button>
+                )}
               </div>
-              {messages.length > 0 && (
-                <button onClick={() => setMessages([])} className="text-xs text-red-500 hover:text-red-700 border border-red-200 hover:border-red-300 px-3 py-2.5 rounded-xl transition bg-red-50">Clear</button>
-              )}
             </div>
           </div>
         </div>
@@ -301,7 +317,7 @@ function HealthAdvisorContent() {
                   <div className="whitespace-pre-wrap">{msg.text}</div>
                   {msg.role === "assistant" && (
                     <div className="mt-2.5">
-                      <SpeakButton text={msg.text} langCode={selectedCountry.languageCode} label="Listen" />
+                      <SpeakButton text={msg.text} langCode={getLanguageCode(language)} label="Listen" />
                     </div>
                   )}
                 </div>
@@ -358,7 +374,7 @@ function HealthAdvisorContent() {
                 onTouchEnd={(e) => { e.preventDefault(); stopRecording(); }}
                 onClick={isRecording ? stopRecording : undefined}
                 disabled={loading || isTranscribing}
-                title={isRecording ? "Release to transcribe" : `Hold to record in ${selectedCountry.language}`}
+                title={isRecording ? "Release to transcribe" : `Hold to record in ${language}`}
                 className={`px-3.5 py-2.5 rounded-xl transition-all disabled:opacity-40 flex-shrink-0 select-none ${
                   isRecording
                     ? "bg-red-500 text-white shadow-md scale-105"
@@ -383,7 +399,7 @@ function HealthAdvisorContent() {
                 placeholder={
                   isRecording ? `Recording... release mic to stop`
                   : isTranscribing ? "Transcribing your voice..."
-                  : `Describe symptoms in ${selectedCountry.language} or English...`
+                  : `Describe symptoms in ${language} or English...`
                 }
                 className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 placeholder-slate-400 shadow-sm"
                 disabled={loading || isRecording || isTranscribing}

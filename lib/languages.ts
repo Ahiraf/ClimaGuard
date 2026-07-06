@@ -37,6 +37,70 @@ export const COUNTRIES: CountryInfo[] = [
   { name: "Niger", code: "NE", language: "French", languageCode: "fr", flag: "🇳🇪", lat: 17.607, lon: 8.081, capital: "Niamey" },
 ];
 
+// AI output languages — decoupled from country so users can request guidance in
+// any of these, all supported by Gemini 2.5 Flash. `code` is a BCP-47 tag used
+// for text-to-speech read-aloud. See feature: 40+ language support.
+export type AiLanguage = { name: string; code: string };
+
+export const SUPPORTED_LANGUAGES: AiLanguage[] = [
+  { name: "Bengali", code: "bn" },
+  { name: "Hindi", code: "hi" },
+  { name: "Urdu", code: "ur" },
+  { name: "Arabic", code: "ar" },
+  { name: "English", code: "en" },
+  { name: "French", code: "fr" },
+  { name: "Spanish", code: "es" },
+  { name: "Portuguese", code: "pt" },
+  { name: "Swahili", code: "sw" },
+  { name: "Amharic", code: "am" },
+  { name: "Somali", code: "so" },
+  { name: "Hausa", code: "ha" },
+  { name: "Yoruba", code: "yo" },
+  { name: "Igbo", code: "ig" },
+  { name: "Zulu", code: "zu" },
+  { name: "Afrikaans", code: "af" },
+  { name: "Malagasy", code: "mg" },
+  { name: "Filipino", code: "fil" },
+  { name: "Bahasa Indonesia", code: "id" },
+  { name: "Malay", code: "ms" },
+  { name: "Vietnamese", code: "vi" },
+  { name: "Thai", code: "th" },
+  { name: "Khmer", code: "km" },
+  { name: "Lao", code: "lo" },
+  { name: "Burmese", code: "my" },
+  { name: "Tok Pisin", code: "tpi" },
+  { name: "Chinese (Mandarin)", code: "zh" },
+  { name: "Japanese", code: "ja" },
+  { name: "Korean", code: "ko" },
+  { name: "Tamil", code: "ta" },
+  { name: "Telugu", code: "te" },
+  { name: "Marathi", code: "mr" },
+  { name: "Gujarati", code: "gu" },
+  { name: "Punjabi", code: "pa" },
+  { name: "Kannada", code: "kn" },
+  { name: "Malayalam", code: "ml" },
+  { name: "Nepali", code: "ne" },
+  { name: "Sinhala", code: "si" },
+  { name: "Persian (Farsi)", code: "fa" },
+  { name: "Dari", code: "prs" },
+  { name: "Pashto", code: "ps" },
+  { name: "Kurdish", code: "ku" },
+  { name: "Turkish", code: "tr" },
+  { name: "Russian", code: "ru" },
+  { name: "Ukrainian", code: "uk" },
+  { name: "German", code: "de" },
+  { name: "Italian", code: "it" },
+  { name: "Dutch", code: "nl" },
+  { name: "Polish", code: "pl" },
+  { name: "Greek", code: "el" },
+  { name: "Hebrew", code: "he" },
+];
+
+export const getLanguageCode = (name: string): string =>
+  SUPPORTED_LANGUAGES.find((l) => l.name === name)?.code
+  ?? COUNTRIES.find((c) => c.language === name)?.languageCode
+  ?? "en";
+
 export const getRiskLabel = (language: string, risk: string): string => {
   const labels: Record<string, Record<string, string>> = {
     bn: { LOW: "কম ঝুঁকি", MEDIUM: "মাঝারি ঝুঁকি", HIGH: "উচ্চ ঝুঁকি", CRITICAL: "জরুরি বিপদ" },

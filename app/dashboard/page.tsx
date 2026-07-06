@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Shield, AlertTriangle, ArrowLeft, RefreshCw, Thermometer, Wind, Droplets, Eye, Save, Globe, History, Download } from "lucide-react";
-import { COUNTRIES } from "@/lib/languages";
+import { COUNTRIES, SUPPORTED_LANGUAGES, getLanguageCode } from "@/lib/languages";
 import { saveReportOffline, getOfflineReportList, CachedReport } from "@/lib/offlineCache";
 import { getFCMToken, onFCMMessage, ensureAnonymousAuth } from "@/lib/firebase";
 import OfflineReportBanner from "@/components/OfflineReportBanner";
@@ -62,6 +62,9 @@ export default function Dashboard() {
   const [childAge, setChildAge] = useState("5");
   const [childName, setChildName] = useState("");
   const [childConditions, setChildConditions] = useState("");
+  // Output language — defaults to the country's language but can be overridden
+  // to any of the 40+ Gemini-supported languages.
+  const [language, setLanguage] = useState<string>(COUNTRIES[0].language);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState("");
@@ -148,6 +151,7 @@ export default function Dashboard() {
     });
     setChildAge(r.childAge);
     setChildName(r.childName);
+    if (r.language) setLanguage(r.language);
     const match = COUNTRIES.find((c) => c.flag === r.flag) ?? COUNTRIES.find((c) => r.country.includes(c.name));
     if (match) setSelectedCountry(match);
     if (typeof r.lat === "number" && typeof r.lon === "number") {
@@ -171,6 +175,7 @@ export default function Dashboard() {
   const handleCountryChange = (code: string) => {
     const c = COUNTRIES.find(c => c.code === code)!;
     setSelectedCountry(c);
+    setLanguage(c.language); // sensible default; user can still override
     setLocation({
       name: c.capital,
       country: c.name,
@@ -193,7 +198,7 @@ export default function Dashboard() {
           lat: location.lat,
           lon: location.lon,
           countryName: location.displayName,
-          language: selectedCountry.language,
+          language,
           childAge,
           childName,
           childConditions,
@@ -205,7 +210,7 @@ export default function Dashboard() {
       const reportPayload = {
         country: location.displayName,
         flag: selectedCountry.flag,
-        language: selectedCountry.language,
+        language,
         childAge,
         childName,
         overallRisk: data.overallRisk,
@@ -309,6 +314,22 @@ export default function Dashboard() {
 
           <div className="mb-5">
             <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">
+              AI Response Language <span className="normal-case font-normal">(any of {SUPPORTED_LANGUAGES.length}+ languages)</span>
+            </label>
+            <select
+              className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
+              value={language}
+              onChange={e => setLanguage(e.target.value)}
+            >
+              {SUPPORTED_LANGUAGES.map(l => (
+                <option key={l.code} value={l.name}>{l.name}</option>
+              ))}
+            </select>
+            <p className="text-xs text-slate-400 mt-1.5">Defaults to your country&apos;s language — change it to get the report in any language.</p>
+          </div>
+
+          <div className="mb-5">
+            <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">
               Health Conditions <span className="normal-case font-normal">(optional — asthma, malnutrition, allergies…)</span>
             </label>
             <input
@@ -334,7 +355,7 @@ export default function Dashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex flex-wrap gap-2">
               <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1.5 rounded-lg font-medium">
-                AI responds in: {selectedCountry.language}
+                AI responds in: {language}
               </span>
               <span className="text-xs bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg truncate max-w-[200px] sm:max-w-none">
                 {location.displayName}
@@ -360,7 +381,7 @@ export default function Dashboard() {
 
         {/* Always-available offline first-response guide (works with no internet, first use) */}
         <div className="mb-6">
-          <OfflineGuidancePacks childAge={childAge} langCode={selectedCountry.languageCode} />
+          <OfflineGuidancePacks childAge={childAge} langCode={getLanguageCode(language)} />
         </div>
 
         {result && risk && (
@@ -386,7 +407,7 @@ export default function Dashboard() {
                     <span className="text-slate-300">·</span>
                     <span>{childName || "Child"}, {childAge} yrs</span>
                     <span className="text-slate-300">·</span>
-                    <span>{selectedCountry.language}</span>
+                    <span>{language}</span>
                   </div>
                 </div>
                 <div className={`w-16 h-16 rounded-2xl ${risk.bg} border ${risk.border} flex items-center justify-center text-3xl shadow-sm`}>
@@ -443,10 +464,10 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h2 className="font-semibold text-slate-900 text-sm">Gemini AI Action Plan</h2>
-                  <p className="text-xs text-slate-400">Personalized for {childName || "your child"} · {selectedCountry.language}</p>
+                  <p className="text-xs text-slate-400">Personalized for {childName || "your child"} · {language}</p>
                 </div>
                 <div className="ml-auto">
-                  <SpeakButton text={result.analysis} langCode={selectedCountry.languageCode} />
+                  <SpeakButton text={result.analysis} langCode={getLanguageCode(language)} />
                 </div>
               </div>
               <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{result.analysis}</div>
@@ -462,7 +483,7 @@ export default function Dashboard() {
                 <button
                   onClick={() => {
                     if (!result) return;
-                    saveReportOffline({ country: location.displayName, flag: selectedCountry.flag, language: selectedCountry.language, childAge, childName, overallRisk: result.overallRisk, analysis: result.analysis, weather: result.weather, lat: location.lat, lon: location.lon, savedAt: new Date().toISOString() });
+                    saveReportOffline({ country: location.displayName, flag: selectedCountry.flag, language, childAge, childName, overallRisk: result.overallRisk, analysis: result.analysis, weather: result.weather, lat: location.lat, lon: location.lon, savedAt: new Date().toISOString() });
                     setOfflineHistory(getOfflineReportList());
                     setSavedOffline(true);
                     setTimeout(() => setSavedOffline(false), 2500);
@@ -485,7 +506,7 @@ export default function Dashboard() {
                       const res = await fetch("/api/export-pdf", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ country: location.displayName, childName, childAge, overallRisk: result.overallRisk, analysis: result.analysis, weather: result.weather, language: selectedCountry.language }),
+                        body: JSON.stringify({ country: location.displayName, childName, childAge, overallRisk: result.overallRisk, analysis: result.analysis, weather: result.weather, language }),
                       });
                       const data = await res.json();
                       if (data.url) {
@@ -562,7 +583,7 @@ export default function Dashboard() {
                 <div className="font-semibold text-slate-900 text-sm">Is your child showing symptoms?</div>
                 <div className="text-sm text-slate-500 mt-0.5">Use AI Health Advisor for climate-linked illness guidance</div>
               </div>
-              <Link href={`/health?country=${selectedCountry.code}&age=${childAge}&name=${childName}&conditions=${encodeURIComponent(childConditions)}`}
+              <Link href={`/health?country=${selectedCountry.code}&age=${childAge}&name=${childName}&conditions=${encodeURIComponent(childConditions)}&lang=${encodeURIComponent(language)}`}
                 className="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition whitespace-nowrap shrink-0">
                 Health Advisor →
               </Link>

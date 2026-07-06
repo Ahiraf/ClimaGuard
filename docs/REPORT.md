@@ -107,7 +107,9 @@ reliability, localization, and offline resilience.
   or login friction (anonymous Firebase auth).
 - **Five independent Gemini capabilities** live and functioning: risk assessment, health chat,
   vision analysis, voice transcription, and age-specific text guidance.
-- **25 countries** with localized helplines and **40+ languages** supported end-to-end.
+- **25 countries** with localized helplines and a **user-selectable output language picker of 50+
+  Gemini-supported languages** (decoupled from country), with voice input auto-detecting any
+  spoken language.
 - **Offline mode** verified: cached reports, emergency tips, and tap-to-call helplines remain
   available with the network disabled.
 - **Multi-provider fallback** verified to recover from simulated Gemini quota errors without

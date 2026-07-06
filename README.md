@@ -20,7 +20,7 @@ ClimaGuard closes that gap.
 A Next.js + Gemini-powered Progressive Web App that gives parents in 25 UNICEF high-risk countries:
 
 1. **Real-time child climate risk assessment** — live weather + AI-generated, age-specific action plan
-2. **AI Health Advisor** — multi-turn symptom triage in 40+ languages, by voice or text
+2. **AI Health Advisor** — multi-turn symptom triage in 50+ selectable languages (decoupled from country), by voice or text
 3. **Gemini Vision Analyzer** — photo of a rash, flood, or environment → AI risk classification
 4. **Offline mode** — last reports + emergency tips + tap-to-call helplines for every country, cached locally
 5. **Global Risk Heatmap** — BigQuery-powered world map of risk events
