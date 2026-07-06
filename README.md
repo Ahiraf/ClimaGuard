@@ -1,7 +1,7 @@
 # ClimaGuard 🛡️
 
 **AI-powered climate safety platform for children in the world's most vulnerable regions.**
-Powered by **Google Gemini API** · Deployed on **Vercel** · 25 countries · 40+ languages · works offline.
+Powered by **Google Gemini API** · Deployed on **Vercel** · 66 high-risk countries · 55 languages · works offline.
 
 > Based on the *UNICEF Children's Climate Risk Report 2026* — which identified that 1.1 billion children live in countries at extreme climate risk, with no tool providing child-specific, real-time, local-language guidance during disasters.
 
@@ -17,7 +17,7 @@ ClimaGuard closes that gap.
 
 ## Solution Overview
 
-A Next.js + Gemini-powered Progressive Web App that gives parents in 25 UNICEF high-risk countries:
+A Next.js + Gemini-powered Progressive Web App that gives parents in 66 UNICEF-designated high-risk countries (from the CCRR 2026 fragile-context set):
 
 1. **Real-time child climate risk assessment** — live weather + AI-generated, age-specific action plan
 2. **AI Health Advisor** — multi-turn symptom triage in 50+ selectable languages (decoupled from country), by voice or text
@@ -197,8 +197,8 @@ lib/
   gemini.ts             model factories
   geminiWithFallback.ts multi-key rotation + OpenAI/Whisper fallback
   weather.ts            Open-Meteo + hazard detection
-  languages.ts          25 countries, BCP-47 codes, capital coords
-  emergencyContacts.ts  tap-to-call helplines for all 25 countries
+  languages.ts          66 countries + 55 AI languages, BCP-47 codes, capital coords
+  emergencyContacts.ts  curated tap-to-call helplines (25 countries) + global 112 fallback
   firebase.ts           Firestore + Anonymous Auth
   bigquery.ts           heatmap analytics
   offlineCache.ts       localStorage report persistence

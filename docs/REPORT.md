@@ -25,7 +25,8 @@ assume typing ability, a stable connection, and English fluency. **None** combin
 hazard data, the child's age, the local language, and an offline fallback for when the network
 drops mid-disaster — exactly when help is needed most.
 
-**ClimaGuard closes that gap** for parents in 25 UNICEF-designated high-risk countries.
+**ClimaGuard closes that gap** for parents in 66 UNICEF-designated high-risk countries, drawn from
+the CCRR 2026 fragile-context multi-dimensional risk analysis — and works for any location worldwide.
 
 ## 2. Proposed Solution
 
@@ -34,7 +35,7 @@ a phone into a child-climate first-responder. Six capabilities work together:
 
 1. **Real-time child climate risk assessment** — live weather + air quality is combined with the
    child's age and location to produce an AI-generated, age-specific action plan.
-2. **AI Health Advisor** — multi-turn symptom triage by voice or text, in 40+ languages.
+2. **AI Health Advisor** — multi-turn symptom triage by voice or text, in 55 selectable languages.
 3. **Gemini Vision Analyzer** — a photo of a rash, flood, or environment is classified for risk.
 4. **Offline mode** — the last report, emergency tips, and tap-to-call helplines for every country
    are cached locally, so core guidance survives a network outage.
@@ -74,8 +75,9 @@ limit / 429 / 403 errors, then falls back to **OpenAI GPT-4o** (text & vision) a
 text-only triage. This multi-provider resilience is critical: a demo or a real emergency cannot
 fail because one provider is momentarily unavailable.
 
-**Localization.** `lib/languages.ts` maps 25 countries to BCP-47 language codes and capital
-coordinates; `lib/emergencyContacts.ts` holds tap-to-call helplines for each. Every AI prompt
+**Localization.** `lib/languages.ts` maps 66 high-risk countries to BCP-47 language codes and capital
+coordinates and offers 55 selectable AI output languages; `lib/emergencyContacts.ts` holds curated
+tap-to-call helplines for 25 countries with an international 112 fallback elsewhere. Every AI prompt
 injects both the child's age and an instruction to respond entirely in the selected language.
 
 ## 4. AI / ML Approach
@@ -107,9 +109,10 @@ reliability, localization, and offline resilience.
   or login friction (anonymous Firebase auth).
 - **Five independent Gemini capabilities** live and functioning: risk assessment, health chat,
   vision analysis, voice transcription, and age-specific text guidance.
-- **25 countries** with localized helplines and a **user-selectable output language picker of 50+
-  Gemini-supported languages** (decoupled from country), with voice input auto-detecting any
-  spoken language.
+- **66 high-risk countries** (CCRR 2026 fragile-context set) with a **user-selectable output
+  language picker of 55 Gemini-supported languages** (decoupled from country), voice input
+  auto-detecting any spoken language, curated emergency helplines for 25 countries, and a global
+  112 fallback — plus live weather for any location worldwide.
 - **Offline mode** verified: cached reports, emergency tips, and tap-to-call helplines remain
   available with the network disabled.
 - **Multi-provider fallback** verified to recover from simulated Gemini quota errors without

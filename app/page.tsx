@@ -210,7 +210,7 @@ export default function Home() {
           <p className="text-slate-500 max-w-3xl mx-auto leading-relaxed text-base">
             The <strong>UNICEF Children's Climate Risk Report 2026</strong> identified that <strong>1.1 billion children</strong> — nearly half the world's child population — live in countries at extremely high risk from climate change. Yet no tool existed to give individual parents real-time, child-specific, locally-language guidance during a climate emergency.
             <br /><br />
-            ClimaGuard was built to close that gap — combining <strong>Google Gemini AI</strong>, live weather data, multilingual voice input, and <strong>tap-to-call local emergency helplines</strong> for all 25 high-risk countries into a single tool a parent can use from a flooded home, a heat-struck field, or a cyclone shelter — even with no internet.
+            ClimaGuard was built to close that gap — combining <strong>Google Gemini AI</strong>, live weather data, multilingual voice input, and <strong>tap-to-call local emergency helplines</strong> across 66 high-risk countries into a single tool a parent can use from a flooded home, a heat-struck field, or a cyclone shelter — even with no internet.
           </p>
         </div>
 
@@ -223,7 +223,7 @@ export default function Home() {
               { icon: Globe,       label: "Open-Meteo API",           desc: "Free real-time weather: temp, humidity, UV, precipitation" },
               { icon: Activity,    label: "Google Cloud Firestore",   desc: "Cloud persistence of reports and alert history" },
               { icon: Map,         label: "BigQuery + Cloud Storage", desc: "Global risk analytics and PDF report export" },
-              { icon: Siren,       label: "Offline Emergency Helplines", desc: "Tap-to-call helplines for all 25 countries — bundled, no network needed" },
+              { icon: Siren,       label: "Offline Emergency Helplines", desc: "Curated tap-to-call helplines (25 countries) + global 112 fallback — bundled, no network needed" },
             ].map(p => (
               <div key={p.label} className="bg-white/5 border border-white/10 rounded-xl p-4 sm:p-5 text-center overflow-hidden min-h-[140px] sm:min-h-[160px]">
                 <div className="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -240,11 +240,11 @@ export default function Home() {
         <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">All Features</h3>
         <div className="grid md:grid-cols-2 gap-4 mb-16">
           {[
-            { icon: Siren,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "Local Emergency Helplines",    desc: "Tap-to-call ambulance, police, child protection, and disaster hotlines for all 25 ClimaGuard countries — bundled offline so they work even with no signal." },
+            { icon: Siren,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "Local Emergency Helplines",    desc: "Tap-to-call ambulance, police, child protection, and disaster hotlines — curated for 25 countries with an international 112 fallback, bundled offline so they work even with no signal." },
             { icon: AlertTriangle, color: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-100",   title: "Real-Time Risk Assessment",    desc: "Live weather + AI analysis gives an age-specific risk score (LOW → CRITICAL) with a personalized action plan for your child's exact vulnerability." },
             { icon: Heart,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "AI Health Symptom Advisor",    desc: "Describe symptoms in any language — text or voice. Gemini identifies climate-linked illnesses (cholera, dengue, heatstroke) and guides first response." },
             { icon: Camera,        color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-100", title: "Gemini Vision Analyzer",        desc: "Upload a photo — flooded surroundings, a skin rash, smoke damage — and Gemini analyzes the climate health risk visible in the image." },
-            { icon: Mic,           color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100", title: "Multilingual Voice Input",      desc: "Hold to record in any language. Gemini transcribes Bengali, Arabic, Hindi, Hausa, French and 40+ others without needing to type." },
+            { icon: Mic,           color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100", title: "Multilingual Voice Input",      desc: "Hold to record in any language. Gemini transcribes Bengali, Arabic, Hindi, Hausa, French and dozens of others without needing to type." },
             { icon: WifiOff,       color: "text-slate-600",  bg: "bg-slate-50",  border: "border-slate-100",  title: "Offline Mode",                 desc: "Last risk report and emergency health tips are cached locally. Critical guidance stays accessible even when internet goes down during a disaster." },
             { icon: FileDown,      color: "text-emerald-600",bg: "bg-emerald-50",border: "border-emerald-100",title: "PDF Report Export",            desc: "Download a full risk + action plan report to share with local doctors, rescue workers, or schools — even without internet at the clinic." },
             { icon: Bell,          color: "text-amber-600",  bg: "bg-amber-50",  border: "border-amber-100",  title: "Push Notifications",           desc: "Firebase Cloud Messaging sends alerts when conditions change — air quality improves, storm passes, or risk escalates to CRITICAL overnight." },
@@ -252,7 +252,7 @@ export default function Home() {
             { icon: Thermometer,   color: "text-red-500",    bg: "bg-red-50",    border: "border-red-100",    title: "Child-Specific Thresholds",    desc: "Risk thresholds calibrated for children — flagging heat risk at 35°C (not 38°C for adults) because children's bodies overheat faster." },
             { icon: Wind,          color: "text-sky-600",    bg: "bg-sky-50",    border: "border-sky-100",    title: "8 Hazard Types Detected",      desc: "Floods, extreme heat, cyclones, drought, dust storms, poor air quality, UV radiation, and waterborne disease risk — all in one assessment." },
             { icon: Droplets,      color: "text-blue-500",   bg: "bg-blue-50",   border: "border-blue-100",   title: "Multi-Key API Fallback",       desc: "Gemini API key rotation + OpenAI GPT-4o as final fallback — the app never goes down due to quota limits, even during peak disaster usage." },
-            { icon: Globe,         color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100", title: "25+ Countries, 40+ Languages", desc: "Covers all UNICEF high-risk nations. AI responds in the local language — Hausa, Amharic, Tagalog, Bangla, Urdu — not English by default." },
+            { icon: Globe,         color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100", title: "66 Countries, 55 Languages", desc: "Covers the UNICEF CCRR 2026 high-risk nations, and works for any location worldwide. AI responds in the local language — Hausa, Amharic, Tagalog, Bangla, Urdu — not English by default." },
           ].map(f => (
             <div key={f.title} className={`${f.bg} border ${f.border} rounded-2xl p-5 flex gap-4`}>
               <div className={`w-9 h-9 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-sm border ${f.border}`}>
@@ -341,7 +341,7 @@ export default function Home() {
             <span>✓ No account required</span>
             <span>✓ Works offline</span>
             <span>✓ 100% free</span>
-            <span>✓ 40+ languages</span>
+            <span>✓ 55 languages</span>
             <span>✓ Tap-to-call helplines</span>
           </div>
         </div>

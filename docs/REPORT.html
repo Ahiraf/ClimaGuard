@@ -57,8 +57,10 @@ and English fluency. <strong>None</strong> combine live local hazard
 data, the child’s age, the local language, and an offline fallback for
 when the network drops mid-disaster — exactly when help is needed
 most.</p>
-<p><strong>ClimaGuard closes that gap</strong> for parents in 25
-UNICEF-designated high-risk countries.</p>
+<p><strong>ClimaGuard closes that gap</strong> for parents in 66
+UNICEF-designated high-risk countries, drawn from the CCRR 2026
+fragile-context multi-dimensional risk analysis — and works for any
+location worldwide.</p>
 <h2 id="proposed-solution">2. Proposed Solution</h2>
 <p>ClimaGuard is a <strong>Next.js Progressive Web App</strong> powered
 by <strong>Google Gemini 2.5 Flash</strong> that turns a phone into a
@@ -68,7 +70,7 @@ child-climate first-responder. Six capabilities work together:</p>
 weather + air quality is combined with the child’s age and location to
 produce an AI-generated, age-specific action plan.</li>
 <li><strong>AI Health Advisor</strong> — multi-turn symptom triage by
-voice or text, in 40+ languages.</li>
+voice or text, in 55 selectable languages.</li>
 <li><strong>Gemini Vision Analyzer</strong> — a photo of a rash, flood,
 or environment is classified for risk.</li>
 <li><strong>Offline mode</strong> — the last report, emergency tips, and
@@ -121,10 +123,12 @@ vision route additionally detects safety refusals and retries with a
 text-only triage. This multi-provider resilience is critical: a demo or
 a real emergency cannot fail because one provider is momentarily
 unavailable.</p>
-<p><strong>Localization.</strong> <code>lib/languages.ts</code> maps 25
-countries to BCP-47 language codes and capital coordinates;
-<code>lib/emergencyContacts.ts</code> holds tap-to-call helplines for
-each. Every AI prompt injects both the child’s age and an instruction to
+<p><strong>Localization.</strong> <code>lib/languages.ts</code> maps 66
+high-risk countries to BCP-47 language codes and capital coordinates and
+offers 55 selectable AI output languages;
+<code>lib/emergencyContacts.ts</code> holds curated tap-to-call
+helplines for 25 countries with an international 112 fallback elsewhere.
+Every AI prompt injects both the child’s age and an instruction to
 respond entirely in the selected language.</p>
 <h2 id="ai-ml-approach">4. AI / ML Approach</h2>
 <p>Gemini 2.5 Flash is the central intelligence, used across
@@ -195,10 +199,12 @@ Vercel and usable in-browser with no install or login friction
 <li><strong>Five independent Gemini capabilities</strong> live and
 functioning: risk assessment, health chat, vision analysis, voice
 transcription, and age-specific text guidance.</li>
-<li><strong>25 countries</strong> with localized helplines and a
-<strong>user-selectable output language picker of 50+ Gemini-supported
-languages</strong> (decoupled from country), with voice input
-auto-detecting any spoken language.</li>
+<li><strong>66 high-risk countries</strong> (CCRR 2026 fragile-context
+set) with a <strong>user-selectable output language picker of 55
+Gemini-supported languages</strong> (decoupled from country), voice
+input auto-detecting any spoken language, curated emergency helplines
+for 25 countries, and a global 112 fallback — plus live weather for any
+location worldwide.</li>
 <li><strong>Offline mode</strong> verified: cached reports, emergency
 tips, and tap-to-call helplines remain available with the network
 disabled.</li>
