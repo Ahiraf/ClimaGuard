@@ -5,6 +5,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const audio = formData.get("audio") as File;
+    const expectedLanguage = (formData.get("language") as string) || "";
 
     if (!audio || audio.size === 0) {
       return NextResponse.json({ error: "No audio provided" }, { status: 400 });
@@ -23,29 +24,29 @@ export async function POST(req: NextRequest) {
 
     let transcript = "";
     try {
-      transcript = await withGeminiFallback(async (client) => {
-        const model = client.getGenerativeModel({ model: "gemini-2.5-flash" });
-        const result = await model.generateContent([
-          {
-            text: `Listen to this audio and transcribe EXACTLY what was spoken.
-
-CRITICAL RULES — follow strictly:
-1. Identify the language being spoken by listening to the audio itself
-2. Write the transcription in the SAME language and script as spoken — Hindi in Devanagari, Arabic in Arabic script, Urdu in Nastaliq, French in Latin, etc.
-3. NEVER convert or transliterate into Bengali or any other language
-4. NEVER translate — output the exact words spoken
-5. Output ONLY the spoken words, nothing else
-6. If audio is silent or unintelligible, output nothing
-
-Example: if the speaker says "meri beti ko bukhaar hai" in Hindi, output: मेरी बेटी को बुखार है`,
-          },
-          { inlineData: { mimeType, data: base64 } },
-        ]);
-        return result.response.text().trim();
-      });
-    } catch (geminiErr) {
-      console.warn("Gemini transcribe exhausted — falling back to OpenAI Whisper:", geminiErr);
+      // Whisper is the industry-standard for speech-to-text — use it as primary
+      // It's specifically trained for accurate multilingual transcription, unlike Gemini
       transcript = await callWhisperFallback(Buffer.from(bytes), filename, mimeType);
+    } catch (whisperErr) {
+      console.warn("Whisper transcription failed, trying Gemini as fallback:", whisperErr);
+      // Only use Gemini as fallback if Whisper is unavailable/fails
+      try {
+        transcript = await withGeminiFallback(async (client) => {
+          const model = client.getGenerativeModel({ model: "gemini-2.5-flash" });
+          const prompt = expectedLanguage
+            ? `Transcribe this audio EXACTLY as spoken in ${expectedLanguage}. Output ONLY the transcribed words, nothing else.`
+            : `Transcribe this audio EXACTLY as spoken. Output ONLY the transcribed words, nothing else.`;
+
+          const result = await model.generateContent([
+            { text: prompt },
+            { inlineData: { mimeType, data: base64 } },
+          ]);
+          return result.response.text().trim();
+        });
+      } catch (geminiErr) {
+        console.error("Both Whisper and Gemini failed:", geminiErr);
+        throw new Error("Audio transcription failed. Please check your API keys are configured.");
+      }
     }
 
     if (!transcript) {
