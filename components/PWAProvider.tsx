@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Download, Wifi, WifiOff } from "lucide-react";
+import { getFCMToken, onFCMMessage, ensureAnonymousAuth } from "@/lib/firebase";
 
 export default function PWAProvider() {
   const [isOnline, setIsOnline] = useState(true);
@@ -16,6 +17,24 @@ export default function PWAProvider() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => {});
     }
+
+    // Register FCM token globally (works on all pages, not just Dashboard)
+    // This allows users to receive critical alerts from anywhere in the app
+    (async () => {
+      try {
+        await ensureAnonymousAuth();
+        const token = await getFCMToken();
+        if (token) {
+          console.log("FCM Token registered globally:", token);
+        }
+        // Listen for foreground notifications
+        onFCMMessage((payload) => {
+          console.log("Foreground notification received:", payload);
+        });
+      } catch (err) {
+        console.warn("FCM global setup failed (non-critical):", err);
+      }
+    })();
 
     const handleOnline = () => {
       setIsOnline(true);

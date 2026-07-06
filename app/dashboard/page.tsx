@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Shield, AlertTriangle, ArrowLeft, RefreshCw, Thermometer, Wind, Droplets, Eye, Save, Globe, History, Download } from "lucide-react";
 import { COUNTRIES } from "@/lib/languages";
 import { saveReportOffline, getOfflineReportList, CachedReport } from "@/lib/offlineCache";
+import { getFCMToken, onFCMMessage, ensureAnonymousAuth } from "@/lib/firebase";
 import OfflineReportBanner from "@/components/OfflineReportBanner";
 import VisionAnalyzer from "@/components/VisionAnalyzer";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
@@ -68,6 +69,25 @@ export default function Dashboard() {
 
   useEffect(() => {
     setOfflineHistory(getOfflineReportList());
+
+    // Register FCM token for push notifications
+    (async () => {
+      try {
+        await ensureAnonymousAuth();
+        const token = await getFCMToken();
+        if (token) {
+          console.log("FCM Token registered:", token);
+          // Note: Token is stored server-side when saving reports via saveReportToFirestore
+        }
+        // Listen for foreground notifications
+        onFCMMessage((payload) => {
+          console.log("Foreground notification received:", payload);
+        });
+      } catch (err) {
+        console.warn("FCM setup failed:", err);
+      }
+    })();
+
     getReportsFromFirestore(5)
       .then((reports) => {
         setReportHistory(reports);

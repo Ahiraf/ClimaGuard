@@ -2,7 +2,7 @@ import {
   collection, addDoc, getDocs, query, orderBy, limit,
   serverTimestamp, doc, setDoc, getDoc,
 } from "firebase/firestore";
-import { db, ensureAnonymousAuth } from "./firebase";
+import { db, ensureAnonymousAuth, getFCMToken } from "./firebase";
 
 export type FirestoreReport = {
   id?: string;
@@ -33,11 +33,29 @@ export async function saveReportToFirestore(report: Omit<FirestoreReport, "userI
   try {
     const user = await ensureAnonymousAuth();
     if (!user) return null;
+
     const ref = await addDoc(collection(db, "reports"), {
       ...report,
       userId: user.uid,
       createdAt: serverTimestamp(),
     });
+
+    // Capture and store FCM token for push notifications
+    try {
+      const fcmToken = await getFCMToken();
+      if (fcmToken) {
+        await setDoc(doc(db, "users", user.uid), {
+          childName: report.childName,
+          childAge: report.childAge,
+          countryCode: report.country,
+          fcmToken,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+      }
+    } catch (fcmErr) {
+      console.warn("FCM token capture failed:", fcmErr);
+    }
+
     return ref.id;
   } catch (e) {
     console.error("Firestore save error:", e);
