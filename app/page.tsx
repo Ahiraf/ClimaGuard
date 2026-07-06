@@ -223,7 +223,7 @@ export default function Home() {
               { icon: Globe,       label: "Open-Meteo API",           desc: "Free real-time weather: temp, humidity, UV, precipitation" },
               { icon: Activity,    label: "Google Cloud Firestore",   desc: "Cloud persistence of reports and alert history" },
               { icon: Map,         label: "BigQuery + Cloud Storage", desc: "Global risk analytics and PDF report export" },
-              { icon: Siren,       label: "Offline Emergency Helplines", desc: "Curated tap-to-call helplines (25 countries) + global 112 fallback — bundled, no network needed" },
+              { icon: Siren,       label: "Offline Emergency Helplines", desc: "Curated tap-to-call helplines for all 66 countries + global 112 fallback — bundled, no network needed" },
             ].map(p => (
               <div key={p.label} className="bg-white/5 border border-white/10 rounded-xl p-4 sm:p-5 text-center overflow-hidden min-h-[140px] sm:min-h-[160px]">
                 <div className="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -240,7 +240,7 @@ export default function Home() {
         <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">All Features</h3>
         <div className="grid md:grid-cols-2 gap-4 mb-16">
           {[
-            { icon: Siren,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "Local Emergency Helplines",    desc: "Tap-to-call ambulance, police, child protection, and disaster hotlines — curated for 25 countries with an international 112 fallback, bundled offline so they work even with no signal." },
+            { icon: Siren,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "Local Emergency Helplines",    desc: "Tap-to-call ambulance, police, child protection, and disaster hotlines — curated for all 66 countries with an international 112 fallback, bundled offline so they work even with no signal." },
             { icon: AlertTriangle, color: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-100",   title: "Real-Time Risk Assessment",    desc: "Live weather + AI analysis gives an age-specific risk score (LOW → CRITICAL) with a personalized action plan for your child's exact vulnerability." },
             { icon: Heart,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "AI Health Symptom Advisor",    desc: "Describe symptoms in any language — text or voice. Gemini identifies climate-linked illnesses (cholera, dengue, heatstroke) and guides first response." },
             { icon: Camera,        color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-100", title: "Gemini Vision Analyzer",        desc: "Upload a photo — flooded surroundings, a skin rash, smoke damage — and Gemini analyzes the climate health risk visible in the image." },

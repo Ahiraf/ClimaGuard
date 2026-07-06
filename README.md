@@ -198,7 +198,7 @@ lib/
   geminiWithFallback.ts multi-key rotation + OpenAI/Whisper fallback
   weather.ts            Open-Meteo + hazard detection
   languages.ts          66 countries + 55 AI languages, BCP-47 codes, capital coords
-  emergencyContacts.ts  curated tap-to-call helplines (25 countries) + global 112 fallback
+  emergencyContacts.ts  curated tap-to-call helplines for all 66 countries + global 112 fallback
   firebase.ts           Firestore + Anonymous Auth
   bigquery.ts           heatmap analytics
   offlineCache.ts       localStorage report persistence

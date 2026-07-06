@@ -77,7 +77,8 @@ fail because one provider is momentarily unavailable.
 
 **Localization.** `lib/languages.ts` maps 66 high-risk countries to BCP-47 language codes and capital
 coordinates and offers 55 selectable AI output languages; `lib/emergencyContacts.ts` holds curated
-tap-to-call helplines for 25 countries with an international 112 fallback elsewhere. Every AI prompt
+tap-to-call helplines for all 66 countries with an international 112 fallback for any other location.
+Every AI prompt
 injects both the child's age and an instruction to respond entirely in the selected language.
 
 ## 4. AI / ML Approach
@@ -111,7 +112,7 @@ reliability, localization, and offline resilience.
   vision analysis, voice transcription, and age-specific text guidance.
 - **66 high-risk countries** (CCRR 2026 fragile-context set) with a **user-selectable output
   language picker of 55 Gemini-supported languages** (decoupled from country), voice input
-  auto-detecting any spoken language, curated emergency helplines for 25 countries, and a global
+  auto-detecting any spoken language, curated emergency helplines for all 66 countries, and a global
   112 fallback — plus live weather for any location worldwide.
 - **Offline mode** verified: cached reports, emergency tips, and tap-to-call helplines remain
   available with the network disabled.
