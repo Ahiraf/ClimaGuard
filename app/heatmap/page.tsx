@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Shield, ArrowLeft, Globe } from "lucide-react";
+import CommunityReports from "@/components/CommunityReports";
 
 const GlobalHeatmap = dynamic(() => import("@/components/GlobalHeatmap"), {
   ssr: false,
@@ -57,6 +58,11 @@ export default function HeatmapPage() {
 
         {/* Heatmap */}
         <GlobalHeatmap />
+
+        {/* Crowdsourced community reports */}
+        <div className="mt-8">
+          <CommunityReports />
+        </div>
 
         {/* Context section */}
         <div className="mt-8 grid md:grid-cols-3 gap-5">
