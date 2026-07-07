@@ -6,7 +6,6 @@ import {
   Users, Volume2, PhoneCall, MessageSquare, Languages,
 } from "lucide-react";
 import HelplineBar from "@/components/HelplineBar";
-import OfflineGuidancePacks from "@/components/OfflineGuidancePacks";
 
 const stats = [
   { value: "1.1B", label: "Children exposed to 3+ climate hazards" },
@@ -95,7 +94,7 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center gap-1">
             <Link href="/dashboard" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Calculate Risk</Link>
-            <a href="#offline-guide" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Offline Guide</a>
+            <Link href="/offline-guide" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Offline Guide</Link>
             <Link href="/health" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Health Advisor</Link>
             <Link href="/vision" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Vision Analyzer</Link>
             <Link href="/heatmap" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Global Map</Link>
@@ -187,14 +186,6 @@ export default function Home() {
                 View Map <ChevronRight className="w-4 h-4" />
               </div>
             </Link>
-          </div>
-
-          {/* Offline Emergency Guide — works with zero network, right beside the tools */}
-          <div className="mt-6">
-            <div className="flex items-center gap-2 mb-3 text-blue-300 text-xs font-semibold uppercase tracking-widest">
-              <WifiOff className="w-3.5 h-3.5" /> Works even with no internet
-            </div>
-            <OfflineGuidancePacks childAge="5" />
           </div>
         </div>
       </section>
