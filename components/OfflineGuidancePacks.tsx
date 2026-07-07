@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WifiOff, ChevronDown, Phone } from "lucide-react";
 import { OFFLINE_GUIDANCE, ageToBand, AGE_BAND_LABEL } from "@/lib/offlineGuidance";
+import { getLanguageCode } from "@/lib/languages";
+import { loadUserPrefs } from "@/lib/userPrefs";
 import SpeakButton from "./SpeakButton";
 
 type Props = {
@@ -16,7 +18,17 @@ type Props = {
  */
 export default function OfflineGuidancePacks({ childAge, langCode }: Props) {
   const [open, setOpen] = useState<string | null>(null);
-  const band = ageToBand(childAge);
+  // Personalize from saved prefs (age band + read-aloud language) when available.
+  const [age, setAge] = useState(childAge);
+  const [effectiveLang, setEffectiveLang] = useState(langCode);
+
+  useEffect(() => {
+    const prefs = loadUserPrefs();
+    if (prefs?.childAge) setAge(prefs.childAge);
+    if (prefs?.language) setEffectiveLang(getLanguageCode(prefs.language));
+  }, []);
+
+  const band = ageToBand(age);
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -50,7 +62,7 @@ export default function OfflineGuidancePacks({ childAge, langCode }: Props) {
               {isOpen && (
                 <div className="px-5 pb-4 pt-1">
                   <div className="mb-3">
-                    <SpeakButton text={speakText} langCode={langCode} label="Read this aloud" />
+                    <SpeakButton text={speakText} langCode={effectiveLang} label="Read this aloud" />
                   </div>
                   <ol className="space-y-1.5 mb-3">
                     {steps.map((s, i) => (

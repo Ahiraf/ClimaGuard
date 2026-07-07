@@ -93,6 +93,7 @@ export default function Home() {
             <span className="text-xl font-bold text-white tracking-tight">ClimaGuard</span>
           </div>
           <div className="hidden md:flex items-center gap-1">
+            <Link href="/profile" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">My Children</Link>
             <Link href="/dashboard" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Calculate Risk</Link>
             <Link href="/offline-guide" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Offline Guide</Link>
             <Link href="/health" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Health Advisor</Link>

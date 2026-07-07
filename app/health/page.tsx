@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Shield, ArrowLeft, Send, Heart, AlertTriangle, Mic, MicOff, Loader2 } from "lucide-react";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL, getLanguageCode } from "@/lib/languages";
 import SpeakButton from "@/components/SpeakButton";
+import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
 
 type Message = { role: "user" | "assistant"; text: string };
 
@@ -45,6 +46,29 @@ function HealthAdvisorContent() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const [prefsLoaded, setPrefsLoaded] = useState(false);
+
+  // Apply saved personalization on mount, but only for fields not explicitly
+  // passed via URL (navigation from the dashboard still takes priority).
+  useEffect(() => {
+    const prefs = loadUserPrefs();
+    if (prefs) {
+      if (!params.get("country") && prefs.countryCode) {
+        const c = COUNTRIES.find((c) => c.code === prefs.countryCode);
+        if (c) setSelectedCountry(c);
+      }
+      if (!langParam && prefs.language) setLanguage(prefs.language);
+      if (!params.get("age") && prefs.childAge) setAge(prefs.childAge);
+    }
+    setPrefsLoaded(true);
+  }, []);
+
+  // Persist selections so the next visit (or the dashboard) remembers them.
+  useEffect(() => {
+    if (!prefsLoaded) return;
+    saveUserPrefs({ countryCode: selectedCountry.code, language, childAge: age });
+  }, [prefsLoaded, selectedCountry, language, age]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

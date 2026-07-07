@@ -12,6 +12,7 @@ import SpeakButton from "@/components/SpeakButton";
 import EmergencyActionBanner from "@/components/EmergencyActionBanner";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
 import { saveReportToFirestore, getReportsFromFirestore, FirestoreReport } from "@/lib/firestoreReports";
+import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
 
 type RiskLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
@@ -72,6 +73,35 @@ export default function Dashboard() {
   const [showHistory, setShowHistory] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
   const [savedOffline, setSavedOffline] = useState(false);
+  const [prefsLoaded, setPrefsLoaded] = useState(false);
+
+  // Load saved personalization once on mount (client-only, avoids hydration mismatch).
+  useEffect(() => {
+    const prefs = loadUserPrefs();
+    if (prefs) {
+      if (prefs.countryCode) {
+        const c = COUNTRIES.find((c) => c.code === prefs.countryCode);
+        if (c) setSelectedCountry(c);
+      }
+      if (prefs.location) setLocation(prefs.location);
+      if (prefs.language) setLanguage(prefs.language);
+      if (prefs.childAge) setChildAge(prefs.childAge);
+      if (prefs.childName) setChildName(prefs.childName);
+    }
+    setPrefsLoaded(true);
+  }, []);
+
+  // Persist personalization whenever it changes (after the initial load).
+  useEffect(() => {
+    if (!prefsLoaded) return;
+    saveUserPrefs({
+      countryCode: selectedCountry.code,
+      location,
+      language,
+      childAge,
+      childName,
+    });
+  }, [prefsLoaded, selectedCountry, location, language, childAge, childName]);
 
   useEffect(() => {
     setOfflineHistory(getOfflineReportList());

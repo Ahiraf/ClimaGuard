@@ -1,13 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Siren, ChevronDown, X } from "lucide-react";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL } from "@/lib/languages";
+import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
 import EmergencyHelplines from "@/components/EmergencyHelplines";
 
 export default function HelplineBar() {
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState(COUNTRIES[0]);
+
+  // Sync the helpline country with the shared personalization store so a
+  // choice made anywhere (dashboard, health) is reflected here, and vice versa.
+  useEffect(() => {
+    const prefs = loadUserPrefs();
+    if (prefs?.countryCode) {
+      const c = COUNTRIES.find((c) => c.code === prefs.countryCode);
+      if (c) setCountry(c);
+    }
+  }, []);
 
   return (
     <div className="bg-[#0f2844] border-b border-blue-900/50">
@@ -30,7 +41,19 @@ export default function HelplineBar() {
               value={country.code}
               onChange={(e) => {
                 const next = COUNTRIES.find((c) => c.code === e.target.value);
-                if (next) setCountry(next);
+                if (next) {
+                  setCountry(next);
+                  saveUserPrefs({
+                    countryCode: next.code,
+                    location: {
+                      name: next.capital,
+                      country: next.name,
+                      lat: next.lat,
+                      lon: next.lon,
+                      displayName: `${next.capital}, ${next.name}`,
+                    },
+                  });
+                }
               }}
               className="appearance-none bg-white/10 border border-white/20 text-white text-xs rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:border-blue-400"
             >
