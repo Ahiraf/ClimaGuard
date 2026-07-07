@@ -3,7 +3,7 @@ import {
   Shield, Heart, Globe, AlertTriangle, Zap, ChevronRight,
   Activity, Camera, Map, BookOpen, Thermometer, Wind,
   Droplets, Brain, Mic, WifiOff, FileDown, Bell, Siren,
-  Users, Volume2, PhoneCall, MessageSquare, Languages,
+  Users, UserRound, Volume2, PhoneCall, MessageSquare, Languages,
 } from "lucide-react";
 import HelplineBar from "@/components/HelplineBar";
 
@@ -11,7 +11,7 @@ const stats = [
   { value: "1.1B", label: "Children exposed to 3+ climate hazards" },
   { value: "242M", label: "Students with schooling disrupted in 2024" },
   { value: "21K+", label: "Child displacements per day from climate" },
-  { value: "25+", label: "Countries & languages supported" },
+  { value: "66", label: "Countries · 55 languages supported" },
 ];
 
 const countries = [
@@ -181,7 +181,7 @@ export default function Home() {
               <div className="text-xs text-emerald-300 group-hover:text-emerald-100 font-semibold uppercase tracking-widest mb-1 transition">Live Data</div>
               <h3 className="text-white font-bold text-lg mb-2">Global Risk Map</h3>
               <p className="text-slate-400 group-hover:text-emerald-100 text-sm leading-relaxed transition">
-                Real-time world heatmap of child climate risk across 30+ countries.
+                Real-time world heatmap of child climate risk across 66 countries.
               </p>
               <div className="mt-4 flex items-center gap-1 text-emerald-400 group-hover:text-white text-sm font-semibold transition">
                 View Map <ChevronRight className="w-4 h-4" />
@@ -244,6 +244,7 @@ export default function Home() {
         <div className="grid md:grid-cols-2 gap-4 mb-16">
           {[
             { icon: Siren,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "Local Emergency Helplines",    desc: "Tap-to-call ambulance, police, child protection, and disaster hotlines — curated for all 66 countries with an international 112 fallback, bundled offline so they work even with no signal." },
+            { icon: UserRound,     color: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-100",   title: "Multi-Child Profiles",         desc: "Set up each child once — age, location, language, and health conditions. The active child personalizes every tool (risk, health, helplines, offline guide), and profiles sync across devices via Firestore with an offline cache." },
             { icon: AlertTriangle, color: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-100",   title: "Real-Time Risk Assessment",    desc: "Live weather + AI analysis gives an age-specific risk score (LOW → CRITICAL) with a personalized action plan for your child's exact vulnerability." },
             { icon: Heart,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "AI Health Symptom Advisor",    desc: "Describe symptoms in any language — text or voice. Gemini identifies climate-linked illnesses (cholera, dengue, heatstroke) and guides first response." },
             { icon: Camera,        color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-100", title: "Gemini Vision Analyzer",        desc: "Upload a photo — flooded surroundings, a skin rash, smoke damage — and Gemini analyzes the climate health risk visible in the image." },
@@ -322,7 +323,7 @@ export default function Home() {
             {countries.map(c => (
               <span key={c} className="bg-white border border-slate-200 px-4 py-2 rounded-lg text-sm text-slate-600 shadow-sm font-medium">{c}</span>
             ))}
-            <span className="bg-[#0f2844] text-white px-4 py-2 rounded-lg text-sm font-semibold">+10 more countries</span>
+            <span className="bg-[#0f2844] text-white px-4 py-2 rounded-lg text-sm font-semibold">+51 more countries</span>
           </div>
         </div>
       </section>
