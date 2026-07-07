@@ -118,7 +118,9 @@ heatmap.</p>
 <p><strong>Reliability.</strong> <code>lib/geminiWithFallback.ts</code>
 rotates across three Gemini API keys on quota / rate- limit / 429 / 403
 errors, then falls back to <strong>OpenAI GPT-4o</strong> (text &amp;
-vision) and <strong>Whisper</strong> (audio) as a last resort. The
+vision) as a last resort. Speech-to-text uses <strong>OpenAI
+gpt-4o-transcribe</strong> (the ChatGPT voice model) as primary, with
+Gemini audio as fallback. The
 vision route additionally detects safety refusals and retries with a
 text-only triage. This multi-provider resilience is critical: a demo or
 a real emergency cannot fail because one provider is momentarily

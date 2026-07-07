@@ -70,8 +70,9 @@ selected country's language → the report is rendered, cached to `localStorage`
 and optionally persisted to Firestore for the heatmap.
 
 **Reliability.** `lib/geminiWithFallback.ts` rotates across three Gemini API keys on quota / rate-
-limit / 429 / 403 errors, then falls back to **OpenAI GPT-4o** (text & vision) and **Whisper**
-(audio) as a last resort. The vision route additionally detects safety refusals and retries with a
+limit / 429 / 403 errors, then falls back to **OpenAI GPT-4o** (text & vision) as a last resort.
+Speech-to-text uses **OpenAI gpt-4o-transcribe** (the ChatGPT voice model) as primary, with Gemini
+audio as fallback. The vision route additionally detects safety refusals and retries with a
 text-only triage. This multi-provider resilience is critical: a demo or a real emergency cannot
 fail because one provider is momentarily unavailable.
 

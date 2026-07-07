@@ -50,7 +50,8 @@ A Next.js + Gemini-powered Progressive Web App that gives parents in 66 UNICEF-d
 | Deployment | **Vercel** (live) — Cloud Run + Cloud Build + Secret Manager config also included as an alternative |
 | Scheduled jobs | Firebase **Cloud Functions** (daily risk alerts) |
 | API edge | Google **API Gateway** (rate limiting) |
-| Fallback | OpenAI GPT-4o + Whisper (multi-provider resilience) |
+| Speech-to-text | **OpenAI gpt-4o-transcribe** (ChatGPT voice model) — primary; Gemini audio as fallback |
+| Fallback | OpenAI GPT-4o for text & vision (multi-provider resilience) |
 | Maps | Leaflet + OpenStreetMap |
 | PWA | Custom service worker + manifest |
 
@@ -65,13 +66,14 @@ Gemini 2.5 Flash is the primary AI across **five distinct capability paths** —
 | `app/api/risk-analysis-v2/route.ts` | **Function calling** — Gemini calls `getCurrentWeather` and `getAirQuality` tools as real functions | Lets the model fetch live data instead of guessing |
 | `app/api/health-chat/route.ts` | **Multi-turn chat** with `startChat({ history })` for symptom triage | Maintains context across follow-up questions parents ask in panic |
 | `app/api/vision-analysis/route.ts` | **Multimodal vision** (`inlineData`) — analyzes rash photos or flood damage | Parents can't always describe; a photo + child age + country gives instant triage |
-| `app/api/voice-transcribe/route.ts` | **Multilingual audio transcription** — hold-mic in any language | Many parents in disaster zones can't type their language quickly; voice is faster |
+| `app/api/voice-transcribe/route.ts` | **Multilingual audio transcription** — hold-mic in any language (OpenAI gpt-4o-transcribe primary, Gemini audio fallback) | Many parents in disaster zones can't type their language quickly; voice is faster |
 | `app/api/risk-analysis/route.ts` (v1) | **Text generation** with system instruction for age-appropriate guidance | Risk reports must be tailored to whether the child is an infant, toddler, or teen |
 | `app/api/sms/route.ts` | **Short-form generation** — condenses live guidance into a <300-char SMS in the local language | Reaches feature phones with no smartphone/data; Twilio-webhook compatible |
 
 **Innovative reliability layer (`lib/geminiWithFallback.ts`):**
 - Three Gemini API keys in priority order — rotates on 429/403/quota/rate-limit errors
-- Final-resort fallback to **OpenAI GPT-4o** (text & vision) and **Whisper** (audio)
+- Speech-to-text uses **OpenAI gpt-4o-transcribe** as primary, with **Gemini audio** as fallback
+- Final-resort fallback to **OpenAI GPT-4o** for text & vision when all Gemini keys are exhausted
 - Vision route also auto-detects safety refusals and retries with a text-only triage based on context
 
 **Prompt engineering rules** (per `AGENTS.md`):
@@ -216,7 +218,7 @@ app/
 components/             LocationPicker, MapView, VisionAnalyzer, EmergencyHelplines, HelplineBar, ...
 lib/
   gemini.ts             model factories
-  geminiWithFallback.ts multi-key rotation + OpenAI/Whisper fallback
+  geminiWithFallback.ts multi-key rotation + OpenAI gpt-4o-transcribe (STT) & GPT-4o fallback
   weather.ts            Open-Meteo + hazard detection
   languages.ts          66 countries + 55 AI languages, BCP-47 codes, capital coords
   emergencyContacts.ts  curated tap-to-call helplines for all 66 countries + global 112 fallback

@@ -6,9 +6,9 @@
 
 | Model | Provider | Role | License / Terms |
 |---|---|---|---|
-| **Gemini 2.5 Flash** | Google | Primary model — text generation, function calling, multi-turn chat, multimodal vision, audio transcription | Google Gemini API Terms of Service (commercial API, pre-trained) |
+| **Gemini 2.5 Flash** | Google | Primary model — text generation, function calling, multi-turn chat, multimodal vision; fallback for audio transcription | Google Gemini API Terms of Service (commercial API, pre-trained) |
+| **gpt-4o-transcribe** | OpenAI | Primary speech-to-text (the model behind ChatGPT voice) | OpenAI API Terms of Service (commercial API, pre-trained) |
 | **GPT-4o** | OpenAI | Fallback for text & vision when Gemini is rate-limited/unavailable | OpenAI API Terms of Service (commercial API, pre-trained) |
-| **Whisper** | OpenAI | Fallback for audio transcription | OpenAI API Terms of Service (commercial API, pre-trained) |
 
 No models were trained or fine-tuned from scratch. All models are used as **pre-trained foundation
 models via official hosted APIs**, called server-side only. API usage costs are borne by the team.
@@ -43,6 +43,6 @@ live API data, not on a trained dataset.
 
 ## Attribution
 
-Gemini (Google), GPT-4o & Whisper (OpenAI), Open-Meteo (weather/air quality, CC-BY 4.0), Leaflet +
+Gemini (Google), GPT-4o & gpt-4o-transcribe (OpenAI), Open-Meteo (weather/air quality, CC-BY 4.0), Leaflet +
 OpenStreetMap (maps), Firebase & BigQuery (Google). All third-party resources are also listed in
 the repository `README.md`.

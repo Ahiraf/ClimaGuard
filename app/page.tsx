@@ -220,9 +220,10 @@ export default function Home() {
         {/* What powers it */}
         <div className="bg-[#0f2844] rounded-2xl p-5 sm:p-8 mb-10">
           <h3 className="text-white font-bold text-xl mb-6 text-center">What Powers ClimaGuard</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {[
-              { icon: Brain,       label: "Google Gemini 2.5 Flash",  desc: "Primary AI — text, vision, audio, function calling" },
+              { icon: Brain,       label: "Google Gemini 2.5 Flash",  desc: "Primary AI — text, vision, function calling" },
+              { icon: Mic,         label: "OpenAI gpt-4o-transcribe", desc: "Speech-to-text (ChatGPT voice model) + GPT-4o text/vision fallback" },
               { icon: Globe,       label: "Open-Meteo API",           desc: "Free real-time weather: temp, humidity, UV, precipitation" },
               { icon: Activity,    label: "Google Cloud Firestore",   desc: "Cloud persistence of reports and alert history" },
               { icon: Map,         label: "BigQuery + Cloud Storage", desc: "Global risk analytics and PDF report export" },
@@ -248,7 +249,7 @@ export default function Home() {
             { icon: AlertTriangle, color: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-100",   title: "Real-Time Risk Assessment",    desc: "Live weather + AI analysis gives an age-specific risk score (LOW → CRITICAL) with a personalized action plan for your child's exact vulnerability." },
             { icon: Heart,         color: "text-red-600",    bg: "bg-red-50",    border: "border-red-100",    title: "AI Health Symptom Advisor",    desc: "Describe symptoms in any language — text or voice. Gemini identifies climate-linked illnesses (cholera, dengue, heatstroke) and guides first response." },
             { icon: Camera,        color: "text-violet-600", bg: "bg-violet-50", border: "border-violet-100", title: "Gemini Vision Analyzer",        desc: "Upload a photo — flooded surroundings, a skin rash, smoke damage — and Gemini analyzes the climate health risk visible in the image." },
-            { icon: Mic,           color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100", title: "Multilingual Voice Input",      desc: "Hold to record in any language. Gemini transcribes Bengali, Arabic, Hindi, Hausa, French and dozens of others without needing to type." },
+            { icon: Mic,           color: "text-orange-600", bg: "bg-orange-50", border: "border-orange-100", title: "Multilingual Voice Input",      desc: "Hold to record in any language. OpenAI's gpt-4o-transcribe (the model behind ChatGPT voice) transcribes Bengali, Arabic, Hindi, Hausa, French and dozens more — with Gemini as fallback — without needing to type." },
             { icon: WifiOff,       color: "text-slate-600",  bg: "bg-slate-50",  border: "border-slate-100",  title: "Offline Mode",                 desc: "Last risk report and emergency health tips are cached locally. Critical guidance stays accessible even when internet goes down during a disaster." },
             { icon: FileDown,      color: "text-emerald-600",bg: "bg-emerald-50",border: "border-emerald-100",title: "PDF Report Export",            desc: "Download a full risk + action plan report to share with local doctors, rescue workers, or schools — even without internet at the clinic." },
             { icon: Bell,          color: "text-amber-600",  bg: "bg-amber-50",  border: "border-amber-100",  title: "Push Notifications",           desc: "Firebase Cloud Messaging sends alerts when conditions change — air quality improves, storm passes, or risk escalates to CRITICAL overnight." },

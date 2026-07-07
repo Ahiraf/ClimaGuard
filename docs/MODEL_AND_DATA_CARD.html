@@ -53,21 +53,21 @@ summary of AI models and data sources.</p>
 <td><strong>Gemini 2.5 Flash</strong></td>
 <td>Google</td>
 <td>Primary model — text generation, function calling, multi-turn chat,
-multimodal vision, audio transcription</td>
+multimodal vision; fallback for audio transcription</td>
 <td>Google Gemini API Terms of Service (commercial API,
 pre-trained)</td>
+</tr>
+<tr>
+<td><strong>gpt-4o-transcribe</strong></td>
+<td>OpenAI</td>
+<td>Primary speech-to-text (the model behind ChatGPT voice)</td>
+<td>OpenAI API Terms of Service (commercial API, pre-trained)</td>
 </tr>
 <tr>
 <td><strong>GPT-4o</strong></td>
 <td>OpenAI</td>
 <td>Fallback for text &amp; vision when Gemini is
 rate-limited/unavailable</td>
-<td>OpenAI API Terms of Service (commercial API, pre-trained)</td>
-</tr>
-<tr>
-<td><strong>Whisper</strong></td>
-<td>OpenAI</td>
-<td>Fallback for audio transcription</td>
 <td>OpenAI API Terms of Service (commercial API, pre-trained)</td>
 </tr>
 </tbody>
@@ -152,7 +152,7 @@ safety refusals rather than failing silently.</li>
 offline mode preserves the last guidance only.</li>
 </ul>
 <h2 id="attribution">Attribution</h2>
-<p>Gemini (Google), GPT-4o &amp; Whisper (OpenAI), Open-Meteo
+<p>Gemini (Google), GPT-4o &amp; gpt-4o-transcribe (OpenAI), Open-Meteo
 (weather/air quality, CC-BY 4.0), Leaflet + OpenStreetMap (maps),
 Firebase &amp; BigQuery (Google). All third-party resources are also
 listed in the repository <code>README.md</code>.</p>
