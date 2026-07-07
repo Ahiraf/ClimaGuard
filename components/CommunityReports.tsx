@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Users, Send, MapPin, Loader2 } from "lucide-react";
-import { COUNTRIES } from "@/lib/languages";
+import { COUNTRIES, COUNTRIES_ALPHABETICAL } from "@/lib/languages";
 import {
   submitCommunityReport,
   getCommunityReports,
@@ -73,7 +73,7 @@ export default function CommunityReports() {
             onChange={(e) => setCountryCode(e.target.value)}
             className="border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900"
           >
-            {COUNTRIES.map((c) => (
+            {COUNTRIES_ALPHABETICAL.map((c) => (
               <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
             ))}
           </select>

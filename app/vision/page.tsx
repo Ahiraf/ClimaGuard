@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Shield, ArrowLeft, Camera, ChevronDown } from "lucide-react";
 import VisionAnalyzer from "@/components/VisionAnalyzer";
-import { COUNTRIES, CountryInfo } from "@/lib/languages";
+import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo } from "@/lib/languages";
 
 export default function VisionPage() {
   const [country, setCountry] = useState<CountryInfo>(COUNTRIES[0]);
@@ -65,7 +65,7 @@ export default function VisionPage() {
                   }}
                   className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-9 text-sm text-slate-900 focus:outline-none focus:border-violet-400"
                 >
-                  {COUNTRIES.map((c) => (
+                  {COUNTRIES_ALPHABETICAL.map((c) => (
                     <option key={c.code} value={c.code}>
                       {c.flag} {c.name} — {c.language}
                     </option>

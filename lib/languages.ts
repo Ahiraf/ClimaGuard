@@ -143,6 +143,15 @@ export const SUPPORTED_LANGUAGES: AiLanguage[] = [
   { name: "Hebrew", code: "he" },
 ];
 
+// Alphabetically-sorted copies for dropdown menus. The base arrays above keep
+// their original order because `COUNTRIES[0]` / `SUPPORTED_LANGUAGES[0]` are used
+// as defaults elsewhere — only the UI lists are sorted A→Z.
+export const COUNTRIES_ALPHABETICAL: CountryInfo[] =
+  [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name));
+
+export const SUPPORTED_LANGUAGES_ALPHABETICAL: AiLanguage[] =
+  [...SUPPORTED_LANGUAGES].sort((a, b) => a.name.localeCompare(b.name));
+
 export const getLanguageCode = (name: string): string =>
   SUPPORTED_LANGUAGES.find((l) => l.name === name)?.code
   ?? COUNTRIES.find((c) => c.language === name)?.languageCode

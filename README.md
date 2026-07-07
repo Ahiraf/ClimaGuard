@@ -103,6 +103,27 @@ The live app is hosted on **Vercel**, with Google services powering the AI and d
 
 ---
 
+## Data Sources & References
+
+Every dataset in ClimaGuard is either a live public API or a curated, source-attributed static file bundled for offline use. Nothing is invented by the model at runtime.
+
+| Data | Source | Where it lives | Notes |
+|---|---|---|---|
+| **High-risk country list** (the 66 countries) | *UNICEF Children's Climate Risk Index / CCRR 2026* — fragile-context, multi-dimensional child climate risk set (Figure 21) | `lib/languages.ts` (`COUNTRIES`) | Each entry carries capital-city coordinates used as the default map center |
+| **Languages & TTS codes** (55 AI languages) | Language set supported by **Google Gemini 2.5 Flash**; language tags are [BCP-47 / IETF](https://www.rfc-editor.org/info/bcp47) codes used by the browser Web Speech API for read-aloud | `lib/languages.ts` (`SUPPORTED_LANGUAGES`) | Decoupled from country so any language can be requested anywhere |
+| **Emergency helpline numbers** | National **government civil-defense / disaster-management** lines + **UNICEF country-office** published child-protection lines; international **`112`** GSM fallback | `lib/emergencyContacts.ts` | Publicly published numbers, bundled at build time so they work fully offline. `Verify locally before relying` — see the header note in that file |
+| **Live weather** (temp, humidity, UV, precipitation, wind) | [**Open-Meteo** Forecast API](https://open-meteo.com/) — free, no key | `lib/weather.ts` → `api.open-meteo.com/v1/forecast` | Called by Gemini as a function-calling tool |
+| **Air quality** (PM2.5, European AQI) | [**Open-Meteo** Air-Quality API](https://open-meteo.com/en/docs/air-quality-api) | `lib/weather.ts` → `air-quality-api.open-meteo.com` | |
+| **City/region search (geocoding)** | [**Open-Meteo** Geocoding API](https://open-meteo.com/en/docs/geocoding-api) | `components/LocationPicker.tsx` → `geocoding-api.open-meteo.com` | Autocomplete for the location search box |
+| **GPS reverse-geocoding** | [**OpenStreetMap Nominatim**](https://nominatim.org/) | `components/LocationPicker.tsx` → `nominatim.openstreetmap.org/reverse` | Turns "Use GPS" coordinates into a place name |
+| **Interactive map tiles** | [**OpenStreetMap**](https://www.openstreetmap.org/copyright) tiles via **Leaflet** | `components/MapView.tsx` | Pan / drag-pin / zoom picker for a precise location |
+| **Offline first-response guidance** | Generic, conservative humanitarian **first-aid principles** (WHO / UNICEF / Red Cross framing) — not medical advice | `lib/offlineGuidance.ts` | Age-banded packs for heat, flood, air pollution, cyclone; bundled for zero-network first use |
+| **Community risk reports** | **Crowdsourced** — submitted by users, stored in Firestore | `lib/communityReports.ts` | Human, on-the-ground signal layered on top of the API data |
+
+> ⚠️ Helpline numbers and offline guidance are provided for convenience and were correct at the time of curation. Always confirm the current local emergency number where you are. ClimaGuard is **not a substitute for professional medical or emergency services**.
+
+---
+
 ## Running Locally
 
 ```bash

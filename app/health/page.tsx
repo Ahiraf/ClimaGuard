@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Shield, ArrowLeft, Send, Heart, AlertTriangle, Mic, MicOff, Loader2 } from "lucide-react";
-import { COUNTRIES, CountryInfo, SUPPORTED_LANGUAGES, getLanguageCode } from "@/lib/languages";
+import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL, getLanguageCode } from "@/lib/languages";
 import SpeakButton from "@/components/SpeakButton";
 
 type Message = { role: "user" | "assistant"; text: string };
@@ -231,7 +231,7 @@ function HealthAdvisorContent() {
                 value={selectedCountry.code}
                 onChange={e => handleCountryChange(e.target.value)}
               >
-                {COUNTRIES.map(c => (
+                {COUNTRIES_ALPHABETICAL.map(c => (
                   <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
                 ))}
               </select>
@@ -256,7 +256,7 @@ function HealthAdvisorContent() {
                   value={language}
                   onChange={e => changeLanguage(e.target.value)}
                 >
-                  {SUPPORTED_LANGUAGES.map(l => (
+                  {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => (
                     <option key={l.code} value={l.name}>{l.name}</option>
                   ))}
                 </select>

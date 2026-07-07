@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Shield, AlertTriangle, ArrowLeft, RefreshCw, Thermometer, Wind, Droplets, Eye, Save, Globe, History, Download } from "lucide-react";
-import { COUNTRIES, SUPPORTED_LANGUAGES, getLanguageCode } from "@/lib/languages";
+import { COUNTRIES, COUNTRIES_ALPHABETICAL, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL, getLanguageCode } from "@/lib/languages";
 import { saveReportOffline, getOfflineReportList, CachedReport } from "@/lib/offlineCache";
 import { getFCMToken, onFCMMessage, ensureAnonymousAuth } from "@/lib/firebase";
 import OfflineReportBanner from "@/components/OfflineReportBanner";
@@ -283,7 +283,7 @@ export default function Dashboard() {
                 value={selectedCountry.code}
                 onChange={e => handleCountryChange(e.target.value)}
               >
-                {COUNTRIES.map(c => (
+                {COUNTRIES_ALPHABETICAL.map(c => (
                   <option key={c.code} value={c.code}>{c.flag} {c.name} — {c.language}</option>
                 ))}
               </select>
@@ -321,7 +321,7 @@ export default function Dashboard() {
               value={language}
               onChange={e => setLanguage(e.target.value)}
             >
-              {SUPPORTED_LANGUAGES.map(l => (
+              {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => (
                 <option key={l.code} value={l.name}>{l.name}</option>
               ))}
             </select>

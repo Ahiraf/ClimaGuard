@@ -3,6 +3,7 @@ import {
   Shield, Heart, Globe, AlertTriangle, Zap, ChevronRight,
   Activity, Camera, Map, BookOpen, Thermometer, Wind,
   Droplets, Brain, Mic, WifiOff, FileDown, Bell, Siren,
+  Users, Volume2, PhoneCall, MessageSquare, Languages,
 } from "lucide-react";
 import HelplineBar from "@/components/HelplineBar";
 
@@ -253,6 +254,12 @@ export default function Home() {
             { icon: Wind,          color: "text-sky-600",    bg: "bg-sky-50",    border: "border-sky-100",    title: "8 Hazard Types Detected",      desc: "Floods, extreme heat, cyclones, drought, dust storms, poor air quality, UV radiation, and waterborne disease risk — all in one assessment." },
             { icon: Droplets,      color: "text-blue-500",   bg: "bg-blue-50",   border: "border-blue-100",   title: "Multi-Key API Fallback",       desc: "Gemini API key rotation + OpenAI GPT-4o as final fallback — the app never goes down due to quota limits, even during peak disaster usage." },
             { icon: Globe,         color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-100", title: "66 Countries, 55 Languages", desc: "Covers the UNICEF CCRR 2026 high-risk nations, and works for any location worldwide. AI responds in the local language — Hausa, Amharic, Tagalog, Bangla, Urdu — not English by default." },
+            { icon: Users,         color: "text-cyan-600",   bg: "bg-cyan-50",   border: "border-cyan-100",   title: "Crowdsourced Community Reports", desc: "Families share on-the-ground conditions — rising floodwater, dust, outbreaks — on the global risk map, so neighbours get a live, human-verified picture no satellite feed can provide." },
+            { icon: Languages,     color: "text-fuchsia-600",bg: "bg-fuchsia-50",border: "border-fuchsia-100",title: "Decoupled Language Selector",  desc: "Pick any of 55 AI-response languages independently of your country — a migrant parent in Nigeria can get guidance in Bangla, or an aid worker can switch to English on the same report." },
+            { icon: Volume2,       color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-100", title: "Voice Read-Aloud",             desc: "Every risk report and health reply can be read aloud in the local language via on-device speech synthesis — critical for low-literacy parents, and works offline." },
+            { icon: PhoneCall,     color: "text-rose-600",   bg: "bg-rose-50",   border: "border-rose-100",   title: "One-Tap Emergency Call Banner", desc: "When risk hits HIGH or CRITICAL, a banner surfaces the correct local emergency number for that country — one tap dials ambulance, disaster, or child-protection lines." },
+            { icon: BookOpen,      color: "text-lime-600",   bg: "bg-lime-50",   border: "border-lime-100",   title: "Offline First-Use Guide",      desc: "Age-banded first-response steps for heat, flood, air pollution and cyclone are bundled in the app — they open with zero network, even on the very first launch." },
+            { icon: MessageSquare, color: "text-slate-600",  bg: "bg-slate-50",  border: "border-slate-100",  title: "SMS / USSD Fallback",          desc: "A Twilio-compatible endpoint condenses guidance into a short local-language SMS, reaching feature phones with no smartphone or data connection at all." },
           ].map(f => (
             <div key={f.title} className={`${f.bg} border ${f.border} rounded-2xl p-5 flex gap-4`}>
               <div className={`w-9 h-9 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-sm border ${f.border}`}>

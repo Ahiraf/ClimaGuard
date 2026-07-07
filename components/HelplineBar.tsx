@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Siren, ChevronDown, X } from "lucide-react";
-import { COUNTRIES } from "@/lib/languages";
+import { COUNTRIES, COUNTRIES_ALPHABETICAL } from "@/lib/languages";
 import EmergencyHelplines from "@/components/EmergencyHelplines";
 
 export default function HelplineBar() {
@@ -34,7 +34,7 @@ export default function HelplineBar() {
               }}
               className="appearance-none bg-white/10 border border-white/20 text-white text-xs rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:border-blue-400"
             >
-              {COUNTRIES.map((c) => (
+              {COUNTRIES_ALPHABETICAL.map((c) => (
                 <option key={c.code} value={c.code} className="text-slate-900">
                   {c.flag} {c.name}
                 </option>
