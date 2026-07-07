@@ -10,7 +10,6 @@ import OfflineReportBanner from "@/components/OfflineReportBanner";
 import VisionAnalyzer from "@/components/VisionAnalyzer";
 import SpeakButton from "@/components/SpeakButton";
 import EmergencyActionBanner from "@/components/EmergencyActionBanner";
-import OfflineGuidancePacks from "@/components/OfflineGuidancePacks";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
 import { saveReportToFirestore, getReportsFromFirestore, FirestoreReport } from "@/lib/firestoreReports";
 
@@ -378,11 +377,6 @@ export default function Dashboard() {
             <AlertTriangle className="w-4 h-4 shrink-0" /> {error}
           </div>
         )}
-
-        {/* Always-available offline first-response guide (works with no internet, first use) */}
-        <div className="mb-6">
-          <OfflineGuidancePacks childAge={childAge} langCode={getLanguageCode(language)} />
-        </div>
 
         {result && risk && (
           <div className="space-y-5">

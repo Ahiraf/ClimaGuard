@@ -6,6 +6,7 @@ import {
   Users, Volume2, PhoneCall, MessageSquare, Languages,
 } from "lucide-react";
 import HelplineBar from "@/components/HelplineBar";
+import OfflineGuidancePacks from "@/components/OfflineGuidancePacks";
 
 const stats = [
   { value: "1.1B", label: "Children exposed to 3+ climate hazards" },
@@ -185,6 +186,14 @@ export default function Home() {
                 View Map <ChevronRight className="w-4 h-4" />
               </div>
             </Link>
+          </div>
+
+          {/* Offline Emergency Guide — works with zero network, right beside the tools */}
+          <div className="mt-6">
+            <div className="flex items-center gap-2 mb-3 text-blue-300 text-xs font-semibold uppercase tracking-widest">
+              <WifiOff className="w-3.5 h-3.5" /> Works even with no internet
+            </div>
+            <OfflineGuidancePacks childAge="5" />
           </div>
         </div>
       </section>
