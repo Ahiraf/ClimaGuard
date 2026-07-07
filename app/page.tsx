@@ -95,6 +95,7 @@ export default function Home() {
           </div>
           <div className="hidden md:flex items-center gap-1">
             <Link href="/dashboard" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Calculate Risk</Link>
+            <a href="#offline-guide" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Offline Guide</a>
             <Link href="/health" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Health Advisor</Link>
             <Link href="/vision" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Vision Analyzer</Link>
             <Link href="/heatmap" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Global Map</Link>
