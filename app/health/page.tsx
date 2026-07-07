@@ -438,7 +438,7 @@ function HealthAdvisorContent() {
               </button>
             </div>
             <p className="text-xs text-slate-400 mt-2.5 text-center">
-              Hold mic to record · Release to transcribe with Gemini AI · Works in any language
+              Hold mic to record · Release to transcribe with AI · Works in any language
             </p>
           </div>
         </div>

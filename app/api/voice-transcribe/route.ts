@@ -5,7 +5,6 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const audio = formData.get("audio") as File;
-    const expectedLanguage = (formData.get("language") as string) || "";
 
     if (!audio || audio.size === 0) {
       return NextResponse.json({ error: "No audio provided" }, { status: 400 });
@@ -33,9 +32,12 @@ export async function POST(req: NextRequest) {
       try {
         transcript = await withGeminiFallback(async (client) => {
           const model = client.getGenerativeModel({ model: "gemini-2.5-flash" });
-          const prompt = expectedLanguage
-            ? `Transcribe this audio EXACTLY as spoken in ${expectedLanguage}. Output ONLY the transcribed words, nothing else.`
-            : `Transcribe this audio EXACTLY as spoken. Output ONLY the transcribed words, nothing else.`;
+          // Transcribe verbatim in whatever language is ACTUALLY spoken — never
+          // translate into the selected AI-response language (they are decoupled;
+          // a parent may speak English while French is selected). Forcing a target
+          // language makes the model hallucinate. If the audio is unclear/silent,
+          // return nothing rather than confabulating.
+          const prompt = "Transcribe this audio verbatim in the SAME language that is actually spoken. Auto-detect the spoken language. Do NOT translate. Output ONLY the exact transcribed words and nothing else. If the audio is silent or unintelligible, output an empty string.";
 
           const result = await model.generateContent([
             { text: prompt },

@@ -91,7 +91,9 @@ export async function callOpenAITextTriage(prompt: string): Promise<string> {
   return response.choices[0]?.message?.content ?? "";
 }
 
-// Audio transcription fallback — uses OpenAI Whisper (multilingual, 50+ languages)
+// Primary audio transcription — uses OpenAI gpt-4o-transcribe, the same
+// speech-to-text model that powers ChatGPT voice. Lower error rate than the
+// older whisper-1, especially for non-English languages (our core use case).
 export async function callWhisperFallback(
   audioBuffer: Buffer,
   filename: string,
@@ -121,7 +123,7 @@ export async function callWhisperFallback(
   const file = await toFile(audioBuffer, safeName, { type: safeMime });
   const result = await openai.audio.transcriptions.create({
     file,
-    model: "whisper-1",
+    model: "gpt-4o-transcribe",
   });
   return result.text?.trim() ?? "";
 }
