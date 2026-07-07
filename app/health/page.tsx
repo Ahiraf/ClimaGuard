@@ -92,6 +92,10 @@ function HealthAdvisorContent() {
   }, []);
 
   const startRecording = useCallback(async () => {
+    // Guard against double-starts (rapid taps / touch+mouse) that would stack
+    // timers and orphan recorders — a cause of garbled/empty audio.
+    if (mediaRecorderRef.current?.state === "recording") return;
+    if (timerRef.current) clearInterval(timerRef.current);
     setVoiceError("");
     audioChunksRef.current = [];
 
@@ -313,7 +317,7 @@ function HealthAdvisorContent() {
                   Describe {childName ? `${childName}'s` : "your child's"} symptoms in any language. I&apos;ll identify climate-linked health issues and guide you on next steps.
                 </p>
                 <p className="text-xs text-slate-400 mb-7">
-                  Hold the mic button · Speak in your language · Release to transcribe
+                  Tap the mic · Speak in your language · Tap again to transcribe
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-lg mx-auto">
                   {quickSymptoms.map(s => (
@@ -392,13 +396,9 @@ function HealthAdvisorContent() {
 
             <div className="flex gap-2">
               <button
-                onMouseDown={startRecording}
-                onMouseUp={stopRecording}
-                onTouchStart={(e) => { e.preventDefault(); startRecording(); }}
-                onTouchEnd={(e) => { e.preventDefault(); stopRecording(); }}
-                onClick={isRecording ? stopRecording : undefined}
+                onClick={toggleRecording}
                 disabled={loading || isTranscribing}
-                title={isRecording ? "Release to transcribe" : `Hold to record in ${language}`}
+                title={isRecording ? "Tap to stop & transcribe" : `Tap to record in ${language}`}
                 className={`px-3.5 py-2.5 rounded-xl transition-all disabled:opacity-40 flex-shrink-0 select-none ${
                   isRecording
                     ? "bg-red-500 text-white shadow-md scale-105"
@@ -421,7 +421,7 @@ function HealthAdvisorContent() {
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage(input))}
                 placeholder={
-                  isRecording ? `Recording... release mic to stop`
+                  isRecording ? `Recording... tap mic to stop`
                   : isTranscribing ? "Transcribing your voice..."
                   : `Describe symptoms in ${language} or English...`
                 }
@@ -438,7 +438,7 @@ function HealthAdvisorContent() {
               </button>
             </div>
             <p className="text-xs text-slate-400 mt-2.5 text-center">
-              Hold mic to record · Release to transcribe with AI · Works in any language
+              Tap mic to record · Tap again to transcribe with AI · Works in any language
             </p>
           </div>
         </div>
