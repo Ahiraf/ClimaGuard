@@ -254,11 +254,33 @@ function HealthAdvisorContent() {
       </nav>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 w-full flex flex-col flex-1">
-        {/* Settings bar */}
+        {/* Settings bar — language is the primary control here, not location */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 mb-4 shadow-sm">
-          <div className="grid md:grid-cols-3 gap-4 items-end">
+          {/* AI language — primary. The advisor replies in this language. */}
+          <div className="mb-4">
+            <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">🌐 {tUI.language} <span className="normal-case font-normal">(any of {SUPPORTED_LANGUAGES.length}+ languages)</span></label>
+            <div className="flex gap-2">
+              <select
+                className="flex-1 border-2 border-red-200 rounded-xl px-3 py-3 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-red-400 bg-red-50 text-slate-900 shadow-sm"
+                value={language}
+                onChange={e => changeLanguage(e.target.value)}
+              >
+                {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => {
+                  const native = NATIVE_LANGUAGE_NAMES[l.code];
+                  return (
+                    <option key={l.code} value={l.name}>{native && native !== l.name ? `${native} — ${l.name}` : l.name}</option>
+                  );
+                })}
+              </select>
+              {messages.length > 0 && (
+                <button onClick={() => setMessages([])} className="text-xs text-red-500 hover:text-red-700 border border-red-200 hover:border-red-300 px-3 rounded-xl transition bg-red-50 shrink-0">Clear</button>
+              )}
+            </div>
+          </div>
+          {/* Secondary: country (optional context) + child age */}
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">{tUI.country}</label>
+              <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">{tUI.country} <span className="normal-case font-normal text-slate-400">(optional)</span></label>
               <select
                 className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
                 value={selectedCountry.code}
@@ -280,26 +302,6 @@ function HealthAdvisorContent() {
                   <option key={a} value={a}>{a === "Under 1" ? "Under 1 year" : `${a} years`}</option>
                 ))}
               </select>
-            </div>
-            <div>
-              <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">🌐 {tUI.language} <span className="normal-case font-normal">({SUPPORTED_LANGUAGES.length}+)</span></label>
-              <div className="flex gap-2">
-                <select
-                  className="flex-1 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
-                  value={language}
-                  onChange={e => changeLanguage(e.target.value)}
-                >
-                  {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => {
-                    const native = NATIVE_LANGUAGE_NAMES[l.code];
-                    return (
-                      <option key={l.code} value={l.name}>{native && native !== l.name ? `${native} — ${l.name}` : l.name}</option>
-                    );
-                  })}
-                </select>
-                {messages.length > 0 && (
-                  <button onClick={() => setMessages([])} className="text-xs text-red-500 hover:text-red-700 border border-red-200 hover:border-red-300 px-3 py-2.5 rounded-xl transition bg-red-50 shrink-0">Clear</button>
-                )}
-              </div>
             </div>
           </div>
         </div>

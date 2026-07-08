@@ -7,7 +7,6 @@ import { COUNTRIES, COUNTRIES_ALPHABETICAL, SUPPORTED_LANGUAGES, SUPPORTED_LANGU
 import { saveReportOffline, getOfflineReportList, CachedReport } from "@/lib/offlineCache";
 import { getFCMToken, onFCMMessage, ensureAnonymousAuth } from "@/lib/firebase";
 import OfflineReportBanner from "@/components/OfflineReportBanner";
-import VisionAnalyzer from "@/components/VisionAnalyzer";
 import SpeakButton from "@/components/SpeakButton";
 import EmergencyActionBanner from "@/components/EmergencyActionBanner";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
@@ -635,9 +634,6 @@ export default function Dashboard() {
                 )}
               </div>
             )}
-
-            {/* Vision Analyzer */}
-            <VisionAnalyzer country={selectedCountry} childAge={childAge} childName={childName} />
 
             {/* Link to Health */}
             <div className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between gap-4 shadow-sm">

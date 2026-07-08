@@ -10,6 +10,8 @@ type Props = {
   country: CountryInfo;
   childAge: string;
   childName?: string;
+  /** AI response language (name). Falls back to the country's language. */
+  language?: string;
 };
 
 const analysisTypes = [
@@ -35,7 +37,9 @@ const analysisTypes = [
   },
 ];
 
-export default function VisionAnalyzer({ country, childAge, childName }: Props) {
+export default function VisionAnalyzer({ country, childAge, childName, language }: Props) {
+  // Response language: the explicitly-selected language wins over the country default.
+  const responseLang = language?.trim() || country.language;
   const [analysisType, setAnalysisType] = useState<AnalysisType>("environment");
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -72,7 +76,7 @@ export default function VisionAnalyzer({ country, childAge, childName }: Props) 
     const formData = new FormData();
     formData.append("image", file);
     formData.append("type", analysisType);
-    formData.append("language", country.language);
+    formData.append("language", responseLang);
     formData.append("country", country.name);
     formData.append("childAge", childAge);
 
@@ -105,7 +109,7 @@ export default function VisionAnalyzer({ country, childAge, childName }: Props) 
         </div>
         <div>
           <h2 className="font-semibold text-gray-900">Gemini Vision Analyzer</h2>
-          <p className="text-xs text-gray-400">Upload a photo — AI analyzes in {country.language}</p>
+          <p className="text-xs text-gray-400">Upload a photo — AI analyzes in {responseLang}</p>
         </div>
         <div className="ml-auto flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-full">
           <div className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center">
@@ -207,7 +211,7 @@ export default function VisionAnalyzer({ country, childAge, childName }: Props) 
               <span className="text-white text-xs font-bold">G</span>
             </div>
             <span className="text-sm font-semibold text-gray-800">
-              Gemini Vision Analysis — {country.language}
+              Gemini Vision Analysis — {responseLang}
             </span>
           </div>
           <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap border border-gray-100">
