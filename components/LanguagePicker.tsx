@@ -26,11 +26,16 @@ export default function LanguagePicker({ theme = "dark" }: { theme?: "dark" | "l
             : "bg-white border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 shadow-sm"
         }`}
       >
-        {SUPPORTED_LANGUAGES_ALPHABETICAL.map((l) => (
-          <option key={l.code} value={l.name} className="text-slate-900">
-            {NATIVE_LANGUAGE_NAMES[l.code] ?? l.name}
-          </option>
-        ))}
+        {/* Native name first so parents can scan for their own script, English
+            name second so nobody confuses e.g. دری (Dari) with العربية (Arabic). */}
+        {SUPPORTED_LANGUAGES_ALPHABETICAL.map((l) => {
+          const native = NATIVE_LANGUAGE_NAMES[l.code];
+          return (
+            <option key={l.code} value={l.name} className="text-slate-900">
+              {native && native !== l.name ? `${native} — ${l.name}` : l.name}
+            </option>
+          );
+        })}
       </select>
       <ChevronDown className={`w-3.5 h-3.5 absolute right-2 pointer-events-none ${dark ? "text-slate-300" : "text-slate-400"}`} />
     </div>

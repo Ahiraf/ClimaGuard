@@ -363,9 +363,12 @@ export default function Dashboard() {
               value={language}
               onChange={e => setLanguage(e.target.value)}
             >
-              {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => (
-                <option key={l.code} value={l.name}>{NATIVE_LANGUAGE_NAMES[l.code] ?? l.name}</option>
-              ))}
+              {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => {
+                const native = NATIVE_LANGUAGE_NAMES[l.code];
+                return (
+                  <option key={l.code} value={l.name}>{native && native !== l.name ? `${native} — ${l.name}` : l.name}</option>
+                );
+              })}
             </select>
             <p className="text-xs text-slate-400 mt-1.5">Defaults to your country&apos;s language — change it to get the report in any language.</p>
           </div>

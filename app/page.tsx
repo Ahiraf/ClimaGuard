@@ -11,13 +11,6 @@ import HelplineBar from "@/components/HelplineBar";
 import EmergencyBigButton from "@/components/EmergencyBigButton";
 import { useUIStrings } from "@/lib/useUIStrings";
 
-const stats = [
-  { value: "1.1B", label: "Children exposed to 3+ climate hazards" },
-  { value: "242M", label: "Students with schooling disrupted in 2024" },
-  { value: "21K+", label: "Child displacements per day from climate" },
-  { value: "66", label: "Countries · 55 languages supported" },
-];
-
 const countries = [
   "🇧🇩 Bangladesh","🇮🇳 India","🇵🇰 Pakistan","🇳🇬 Nigeria","🇪🇬 Egypt",
   "🇸🇩 Sudan","🇪🇹 Ethiopia","🇲🇱 Mali","🇧🇫 Burkina Faso","🇵🇭 Philippines",
@@ -85,6 +78,12 @@ const emergencyScenarios = [
 
 export default function Home() {
   const { t } = useUIStrings();
+  const stats = [
+    { value: "1.1B", label: t.statChildren },
+    { value: "242M", label: t.statStudents },
+    { value: "21K+", label: t.statDisplaced },
+    { value: "66", label: t.statCountries },
+  ];
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       {/* Emergency Helplines bar — always at the top */}
@@ -103,7 +102,7 @@ export default function Home() {
             <Link href="/health" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.myChildIsSick}</Link>
             <Link href="/vision" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.sendAPhoto}</Link>
             <Link href="/heatmap" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.worldMap}</Link>
-            <a href="#about" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">About</a>
+            <a href="#about" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.about}</a>
             <Link href="/dashboard" dir="auto" className="ml-2 bg-blue-500 hover:bg-blue-400 text-white text-sm px-5 py-2 rounded-lg transition font-semibold">
               {t.isMyChildInDanger}
             </Link>
@@ -143,8 +142,8 @@ export default function Home() {
               </div>
               <div className="text-xs text-blue-300 group-hover:text-blue-100 font-semibold uppercase tracking-widest mb-1 transition">Risk Dashboard</div>
               <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.isMyChildInDanger}</h3>
-              <p className="text-slate-400 group-hover:text-blue-100 text-sm leading-relaxed transition">
-                Real-time climate risk assessment for your child's age and location.
+              <p dir="auto" className="text-slate-400 group-hover:text-blue-100 text-sm leading-relaxed transition">
+                {t.cardRiskDesc}
               </p>
               <div dir="auto" className="mt-4 flex items-center gap-1 text-blue-400 group-hover:text-white text-sm font-semibold transition">
                 {t.checkNow} <ChevronRight className="w-4 h-4" />
@@ -158,11 +157,11 @@ export default function Home() {
               </div>
               <div className="text-xs text-red-300 group-hover:text-red-100 font-semibold uppercase tracking-widest mb-1 transition">Health Advisor</div>
               <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.myChildIsSick}</h3>
-              <p className="text-slate-400 group-hover:text-red-100 text-sm leading-relaxed transition">
-                Describe symptoms in any language — voice or text. AI guides next steps.
+              <p dir="auto" className="text-slate-400 group-hover:text-red-100 text-sm leading-relaxed transition">
+                {t.cardHealthDesc}
               </p>
-              <div className="mt-4 flex items-center gap-1 text-red-400 group-hover:text-white text-sm font-semibold transition">
-                Open Advisor <ChevronRight className="w-4 h-4" />
+              <div dir="auto" className="mt-4 flex items-center gap-1 text-red-400 group-hover:text-white text-sm font-semibold transition">
+                {t.open} <ChevronRight className="w-4 h-4" />
               </div>
             </Link>
 
@@ -173,11 +172,11 @@ export default function Home() {
               </div>
               <div className="text-xs text-violet-300 group-hover:text-violet-100 font-semibold uppercase tracking-widest mb-1 transition">Photo Analyzer</div>
               <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.sendAPhoto}</h3>
-              <p className="text-slate-400 group-hover:text-violet-100 text-sm leading-relaxed transition">
-                Upload a photo of flood damage, rash, or environment — Gemini analyzes it.
+              <p dir="auto" className="text-slate-400 group-hover:text-violet-100 text-sm leading-relaxed transition">
+                {t.cardPhotoDesc}
               </p>
-              <div className="mt-4 flex items-center gap-1 text-violet-400 group-hover:text-white text-sm font-semibold transition">
-                Try Vision AI <ChevronRight className="w-4 h-4" />
+              <div dir="auto" className="mt-4 flex items-center gap-1 text-violet-400 group-hover:text-white text-sm font-semibold transition">
+                {t.open} <ChevronRight className="w-4 h-4" />
               </div>
             </Link>
 
@@ -188,11 +187,11 @@ export default function Home() {
               </div>
               <div className="text-xs text-emerald-300 group-hover:text-emerald-100 font-semibold uppercase tracking-widest mb-1 transition">Live Data</div>
               <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.worldMap}</h3>
-              <p className="text-slate-400 group-hover:text-emerald-100 text-sm leading-relaxed transition">
-                Real-time world heatmap of child climate risk across 66 countries.
+              <p dir="auto" className="text-slate-400 group-hover:text-emerald-100 text-sm leading-relaxed transition">
+                {t.cardMapDesc}
               </p>
-              <div className="mt-4 flex items-center gap-1 text-emerald-400 group-hover:text-white text-sm font-semibold transition">
-                View Map <ChevronRight className="w-4 h-4" />
+              <div dir="auto" className="mt-4 flex items-center gap-1 text-emerald-400 group-hover:text-white text-sm font-semibold transition">
+                {t.open} <ChevronRight className="w-4 h-4" />
               </div>
             </Link>
           </div>
@@ -205,7 +204,7 @@ export default function Home() {
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">{s.value}</div>
-              <div className="text-slate-400 text-sm leading-snug">{s.label}</div>
+              <div dir="auto" className="text-slate-400 text-sm leading-snug">{s.label}</div>
             </div>
           ))}
         </div>
@@ -217,7 +216,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-4 py-2 rounded-full mb-5 font-semibold uppercase tracking-wide">
             <BookOpen className="w-3.5 h-3.5" /> About ClimaGuard
           </div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Why We Built This</h2>
+          <h2 dir="auto" className="text-3xl font-bold text-slate-900 mb-4">{t.whyTitle}</h2>
           <p className="text-slate-500 max-w-3xl mx-auto leading-relaxed text-base">
             The <strong>UNICEF Children's Climate Risk Report 2026</strong> identified that <strong>1.1 billion children</strong> — nearly half the world's child population — live in countries at extremely high risk from climate change. Yet no tool existed to give individual parents real-time, child-specific, locally-language guidance during a climate emergency.
             <br /><br />
@@ -287,8 +286,8 @@ export default function Home() {
 
         {/* Emergency Scenarios */}
         <div className="text-center mb-10">
-          <h3 className="text-2xl font-bold text-slate-900 mb-3">Real Emergency Situations</h3>
-          <p className="text-slate-500 text-base">How families in high-risk regions use ClimaGuard when it matters most</p>
+          <h3 dir="auto" className="text-2xl font-bold text-slate-900 mb-3">{t.storiesTitle}</h3>
+          <p dir="auto" className="text-slate-500 text-base">{t.storiesSub}</p>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
           {emergencyScenarios.map((s, i) => (
@@ -326,13 +325,13 @@ export default function Home() {
       {/* Countries */}
       <section className="bg-slate-100 py-10 sm:py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-3">Built for the World's Most Vulnerable Children</h2>
-          <p className="text-slate-500 mb-8">Covering all UNICEF high-risk countries with local language support</p>
+          <h2 dir="auto" className="text-2xl font-bold text-slate-900 mb-3">{t.countriesTitle}</h2>
+          <p dir="auto" className="text-slate-500 mb-8">{t.countriesSub}</p>
           <div className="flex flex-wrap justify-center gap-2.5">
             {countries.map(c => (
               <span key={c} className="bg-white border border-slate-200 px-4 py-2 rounded-lg text-sm text-slate-600 shadow-sm font-medium">{c}</span>
             ))}
-            <span className="bg-[#0f2844] text-white px-4 py-2 rounded-lg text-sm font-semibold">+51 more countries</span>
+            <span dir="auto" className="bg-[#0f2844] text-white px-4 py-2 rounded-lg text-sm font-semibold">{t.moreCountries}</span>
           </div>
         </div>
       </section>
@@ -341,9 +340,9 @@ export default function Home() {
       <section className="bg-[#0f2844] py-14 sm:py-20">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <Shield className="w-10 h-10 text-blue-400 mx-auto mb-5" />
-          <h2 className="text-3xl font-bold text-white mb-4">Start Protecting Your Child Now</h2>
-          <p className="text-slate-300 mb-10 leading-relaxed">
-            Select your country, enter your child's age, and get an instant AI-powered climate risk assessment and personalized action plan.
+          <h2 dir="auto" className="text-3xl font-bold text-white mb-4">{t.ctaTitle}</h2>
+          <p dir="auto" className="text-slate-300 mb-10 leading-relaxed">
+            {t.ctaSub}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/dashboard" dir="auto" className="bg-blue-500 hover:bg-blue-400 text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2 shadow-lg">
@@ -357,11 +356,11 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-500">
-            <span>✓ No account required</span>
-            <span>✓ Works offline</span>
-            <span>✓ 100% free</span>
-            <span>✓ 55 languages</span>
-            <span>✓ Tap-to-call helplines</span>
+            <span dir="auto">✓ {t.chipNoAccount}</span>
+            <span dir="auto">✓ {t.worksOffline}</span>
+            <span dir="auto">✓ {t.chipFree}</span>
+            <span dir="auto">✓ {t.chipLanguages}</span>
+            <span dir="auto">✓ {t.tapToCall}</span>
           </div>
         </div>
       </section>
@@ -376,7 +375,7 @@ export default function Home() {
           <p className="text-xs text-slate-500 text-center">
             Data sourced from UNICEF Children's Climate Risk Report 2026 · Powered by Google Gemini API & Open-Meteo
           </p>
-          <p className="text-xs text-slate-500">Not a substitute for medical advice.</p>
+          <p dir="auto" className="text-xs text-slate-500">{t.notMedical}</p>
         </div>
       </footer>
     </div>

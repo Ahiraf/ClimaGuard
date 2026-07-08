@@ -289,9 +289,12 @@ function HealthAdvisorContent() {
                   value={language}
                   onChange={e => changeLanguage(e.target.value)}
                 >
-                  {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => (
-                    <option key={l.code} value={l.name}>{NATIVE_LANGUAGE_NAMES[l.code] ?? l.name}</option>
-                  ))}
+                  {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => {
+                    const native = NATIVE_LANGUAGE_NAMES[l.code];
+                    return (
+                      <option key={l.code} value={l.name}>{native && native !== l.name ? `${native} — ${l.name}` : l.name}</option>
+                    );
+                  })}
                 </select>
                 {messages.length > 0 && (
                   <button onClick={() => setMessages([])} className="text-xs text-red-500 hover:text-red-700 border border-red-200 hover:border-red-300 px-3 py-2.5 rounded-xl transition bg-red-50 shrink-0">Clear</button>
