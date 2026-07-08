@@ -25,3 +25,8 @@ body {
 /* Hide the horizontal scrollbar on the mobile tool-nav strip (still scrollable). */
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Keep Leaflet maps from painting over the sticky navbar: contain their high
+   internal z-index (panes/controls go up to ~1000) inside their own stacking
+   context so the map can never overlap the nav or other fixed UI. */
+.leaflet-container { isolation: isolate; }
