@@ -422,6 +422,51 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Saved reports — always available (even offline, before any new
+            analysis). Click any one to open it below. */}
+        {mergedHistory.length > 0 && (
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm mb-6">
+            <button
+              onClick={() => setShowHistory(h => !h)}
+              className="flex items-center gap-2 w-full text-left"
+            >
+              <History className="w-4 h-4 text-slate-400" />
+              <span className="font-semibold text-slate-800 text-sm">Saved Reports</span>
+              <span className="text-xs text-slate-500 ml-2">· Tap any report to open it {typeof navigator !== "undefined" && !navigator.onLine ? "· works offline" : ""}</span>
+              <span className="text-xs text-slate-400 ml-auto bg-slate-100 px-2 py-0.5 rounded-full">{showHistory ? "Hide" : mergedHistory.length}</span>
+            </button>
+            {showHistory && (
+              <div className="mt-4 space-y-2">
+                {mergedHistory.map((r, i) => {
+                  const isOffline = offlineHistory.some((o) => o.id === r.id);
+                  return (
+                    <button
+                      key={r.id || i}
+                      onClick={() => restoreReport(r)}
+                      className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-blue-50 hover:border-blue-200 transition text-left cursor-pointer"
+                    >
+                      <span className={`px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 ${
+                        r.overallRisk === "CRITICAL" ? "bg-red-100 text-red-700 border border-red-200" :
+                        r.overallRisk === "HIGH" ? "bg-orange-100 text-orange-700 border border-orange-200" :
+                        r.overallRisk === "MEDIUM" ? "bg-amber-100 text-amber-700 border border-amber-200" :
+                        "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                      }`}>{r.overallRisk}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-slate-800 text-sm truncate">{r.country}</div>
+                        <div className="text-xs text-slate-400">{r.childName || "Child"} · {r.childAge} yrs · {new Date(r.savedAt).toLocaleDateString()}</div>
+                      </div>
+                      {isOffline && (
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">OFFLINE</span>
+                      )}
+                      <span>{r.flag}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
         {result && risk && (
           <div className="space-y-5">
             {/* Emergency action banner — only shows for HIGH/CRITICAL */}
@@ -587,50 +632,6 @@ export default function Dashboard() {
                 </button>
               </div>
             </div>
-
-            {/* Report History */}
-            {mergedHistory.length > 0 && (
-              <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-                <button
-                  onClick={() => setShowHistory(h => !h)}
-                  className="flex items-center gap-2 w-full text-left"
-                >
-                  <History className="w-4 h-4 text-slate-400" />
-                  <span className="font-semibold text-slate-800 text-sm">Recent Reports</span>
-                  <span className="text-xs text-slate-500 ml-2">· Click to open offline</span>
-                  <span className="text-xs text-slate-400 ml-auto bg-slate-100 px-2 py-0.5 rounded-full">{showHistory ? "Hide" : mergedHistory.length}</span>
-                </button>
-                {showHistory && (
-                  <div className="mt-4 space-y-2">
-                    {mergedHistory.map((r, i) => {
-                      const isOffline = offlineHistory.some((o) => o.id === r.id);
-                      return (
-                        <button
-                          key={r.id || i}
-                          onClick={() => restoreReport(r)}
-                          className="w-full flex items-center gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-blue-50 hover:border-blue-200 transition text-left cursor-pointer"
-                        >
-                          <span className={`px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 ${
-                            r.overallRisk === "CRITICAL" ? "bg-red-100 text-red-700 border border-red-200" :
-                            r.overallRisk === "HIGH" ? "bg-orange-100 text-orange-700 border border-orange-200" :
-                            r.overallRisk === "MEDIUM" ? "bg-amber-100 text-amber-700 border border-amber-200" :
-                            "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                          }`}>{r.overallRisk}</span>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-slate-800 text-sm truncate">{r.country}</div>
-                            <div className="text-xs text-slate-400">{r.childName || "Child"} · {r.childAge} yrs · {new Date(r.savedAt).toLocaleDateString()}</div>
-                          </div>
-                          {isOffline && (
-                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">OFFLINE</span>
-                          )}
-                          <span>{r.flag}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Link to Health */}
             <div className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between gap-4 shadow-sm">

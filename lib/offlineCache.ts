@@ -29,7 +29,12 @@ export type CachedReport = {
 
 export function saveReportOffline(report: CachedReport) {
   try {
-    const withId: CachedReport = { id: report.id ?? `local-${Date.now()}`, ...report };
+    // Generate the id AFTER spreading so an explicit `id: undefined` can't
+    // clobber it, and add a random suffix so several saves in the same
+    // millisecond (e.g. caching a batch) get distinct ids and don't collapse
+    // into a single entry.
+    const id = report.id ?? `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const withId: CachedReport = { ...report, id };
     localStorage.setItem(CACHE_KEY, JSON.stringify(withId));
     // Also append to the persistent list, deduped by id
     const list = getOfflineReportList();
