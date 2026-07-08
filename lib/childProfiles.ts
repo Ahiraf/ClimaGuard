@@ -78,6 +78,7 @@ export function applyActiveChildToPrefs(state: ProfilesState): void {
     language: child.language,
     childAge: child.age,
     childName: child.name,
+    childConditions: child.healthConditions,
   });
 }
 

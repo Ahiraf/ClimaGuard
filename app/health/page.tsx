@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, Suspense } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Shield, ArrowLeft, Send, Heart, AlertTriangle, Mic, MicOff, Loader2 } from "lucide-react";
+import { Send, AlertTriangle, Mic, MicOff, Loader2 } from "lucide-react";
+import ToolNav from "@/components/ToolNav";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL, getLanguageCode } from "@/lib/languages";
 import SpeakButton from "@/components/SpeakButton";
-import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
+import { loadUserPrefs, saveUserPrefs, PREFS_EVENT, prefsSignature } from "@/lib/userPrefs";
 import { getUIStrings, NATIVE_LANGUAGE_NAMES, getNativeCountryName } from "@/lib/uiStrings";
 
 type Message = { role: "user" | "assistant"; text: string };
@@ -25,13 +25,13 @@ function HealthAdvisorContent() {
   const countryCode = params.get("country") || "BD";
   const childAge = params.get("age") || "5";
   const childName = params.get("name") || "";
-  const childConditions = params.get("conditions") || "";
   const langParam = params.get("lang") || "";
 
   const initialCountry = COUNTRIES.find(c => c.code === countryCode) || COUNTRIES[0];
   const [selectedCountry, setSelectedCountry] = useState<CountryInfo>(initialCountry);
   const [language, setLanguage] = useState<string>(langParam || initialCountry.language);
   const [age, setAge] = useState(childAge);
+  const [childConditions, setChildConditions] = useState(params.get("conditions") || "");
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,25 +49,39 @@ function HealthAdvisorContent() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [prefsLoaded, setPrefsLoaded] = useState(false);
+  const lastSigRef = useRef("");
 
-  // Apply saved personalization on mount, but only for fields not explicitly
-  // passed via URL (navigation from the dashboard still takes priority).
-  useEffect(() => {
-    const prefs = loadUserPrefs();
-    if (prefs) {
-      if (!params.get("country") && prefs.countryCode) {
-        const c = COUNTRIES.find((c) => c.code === prefs.countryCode);
-        if (c) setSelectedCountry(c);
-      }
-      if (!langParam && prefs.language) setLanguage(prefs.language);
-      if (!params.get("age") && prefs.childAge) setAge(prefs.childAge);
+  // Apply the active child's saved details. On the initial mount, URL params
+  // (navigation from the dashboard) take priority; a later change made in
+  // "My Children" always applies so this page re-syncs live.
+  const applyPrefs = useCallback((prefs: ReturnType<typeof loadUserPrefs>, initial: boolean) => {
+    if (!prefs) return;
+    if (prefs.countryCode && (!initial || !params.get("country"))) {
+      const c = COUNTRIES.find((c) => c.code === prefs.countryCode);
+      if (c) setSelectedCountry(c);
     }
-    setPrefsLoaded(true);
-  }, []);
+    if (prefs.language && (!initial || !langParam)) { setLanguage(prefs.language); prevLanguageRef.current = prefs.language; }
+    if (prefs.childAge && (!initial || !params.get("age"))) setAge(prefs.childAge);
+    if (prefs.childConditions !== undefined && (!initial || !params.get("conditions"))) setChildConditions(prefs.childConditions);
+    lastSigRef.current = prefsSignature(prefs);
+  }, [params, langParam]);
 
-  // Persist selections so the next visit (or the dashboard) remembers them.
+  useEffect(() => {
+    applyPrefs(loadUserPrefs(), true);
+    setPrefsLoaded(true);
+    const onChange = () => {
+      const pr = loadUserPrefs();
+      if (prefsSignature(pr) !== lastSigRef.current) applyPrefs(pr, false);
+    };
+    window.addEventListener(PREFS_EVENT, onChange);
+    return () => window.removeEventListener(PREFS_EVENT, onChange);
+  }, [applyPrefs]);
+
+  // Persist selections so the next visit (or another page) remembers them.
   useEffect(() => {
     if (!prefsLoaded) return;
+    const merged = { ...(loadUserPrefs() ?? {}), countryCode: selectedCountry.code, language, childAge: age };
+    lastSigRef.current = prefsSignature(merged);
     saveUserPrefs({ countryCode: selectedCountry.code, language, childAge: age });
   }, [prefsLoaded, selectedCountry, language, age]);
 
@@ -238,20 +252,7 @@ function HealthAdvisorContent() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Navbar */}
-      <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
-          <Link href="/dashboard" className="text-slate-400 hover:text-white transition p-1">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-          <div className="w-px h-4 bg-slate-600" />
-          <Shield className="text-blue-400 w-5 h-5" />
-          <span className="font-bold text-white">ClimaGuard</span>
-          <span className="hidden sm:flex text-slate-500 text-sm ml-1 items-center gap-1.5">
-            / <Heart className="w-3.5 h-3.5 text-red-400" /> Health Advisor
-          </span>
-        </div>
-      </nav>
+      <ToolNav active="health" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 w-full flex flex-col flex-1">
         {/* Settings bar — language is the primary control here, not location */}

@@ -10,7 +10,7 @@ import {
 import HelplineBar from "@/components/HelplineBar";
 import {
   ChildProfile, ProfilesState, getProfilesLocal, loadProfilesFromCloud,
-  saveProfiles, newChildId, locationForCountry, getActiveChild,
+  saveProfiles, newChildId, locationForCountry, getActiveChild, applyActiveChildToPrefs,
 } from "@/lib/childProfiles";
 import { useUIStrings } from "@/lib/useUIStrings";
 import { NATIVE_LANGUAGE_NAMES, getNativeCountryName } from "@/lib/uiStrings";
@@ -37,12 +37,19 @@ export default function ProfilePage() {
   const [isNew, setIsNew] = useState(false);
   const [syncing, setSyncing] = useState(true);
 
-  // Load cache instantly, then refresh from cloud (cross-device).
+  // Load cache instantly, then refresh from cloud (cross-device). Apply the
+  // active child to userPrefs on load too, so every other page reflects it even
+  // if the parent set it up on another device (cloud) and never re-saved here.
   useEffect(() => {
-    setState(getProfilesLocal());
+    const local = getProfilesLocal();
+    setState(local);
+    applyActiveChildToPrefs(local);
     (async () => {
       const cloud = await loadProfilesFromCloud();
-      if (cloud && cloud.children.length) setState(cloud);
+      if (cloud && cloud.children.length) {
+        setState(cloud);
+        applyActiveChildToPrefs(cloud);
+      }
       setSyncing(false);
     })();
   }, []);

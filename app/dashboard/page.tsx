@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { Shield, AlertTriangle, ArrowLeft, RefreshCw, Thermometer, Wind, Droplets, Eye, Save, Globe, History, Download } from "lucide-react";
+import { AlertTriangle, RefreshCw, Thermometer, Wind, Droplets, Eye, Save, Globe, History, Download } from "lucide-react";
+import ToolNav from "@/components/ToolNav";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL, getLanguageCode } from "@/lib/languages";
 import { saveReportOffline, getOfflineReportList, CachedReport } from "@/lib/offlineCache";
 import { getFCMToken, onFCMMessage, ensureAnonymousAuth } from "@/lib/firebase";
@@ -11,7 +12,7 @@ import SpeakButton from "@/components/SpeakButton";
 import EmergencyActionBanner from "@/components/EmergencyActionBanner";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
 import { saveReportToFirestore, getReportsFromFirestore, FirestoreReport } from "@/lib/firestoreReports";
-import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
+import { loadUserPrefs, saveUserPrefs, PREFS_EVENT, prefsSignature, UserPrefs } from "@/lib/userPrefs";
 import { getUIStrings, NATIVE_LANGUAGE_NAMES, getNativeCountryName } from "@/lib/uiStrings";
 import { useUIStrings } from "@/lib/useUIStrings";
 
@@ -76,34 +77,45 @@ export default function Dashboard() {
   const [exportingPdf, setExportingPdf] = useState(false);
   const [savedOffline, setSavedOffline] = useState(false);
   const [prefsLoaded, setPrefsLoaded] = useState(false);
+  // Signature of the last prefs we read/wrote — lets us ignore our own writes
+  // and only re-apply changes made elsewhere (e.g. the active child in "My Children").
+  const lastSigRef = useRef("");
 
-  // Load saved personalization once on mount (client-only, avoids hydration mismatch).
-  useEffect(() => {
-    const prefs = loadUserPrefs();
-    if (prefs) {
-      if (prefs.countryCode) {
-        const c = COUNTRIES.find((c) => c.code === prefs.countryCode);
-        if (c) setSelectedCountry(c);
-      }
-      if (prefs.location) setLocation(prefs.location);
-      if (prefs.language) setLanguage(prefs.language);
-      if (prefs.childAge) setChildAge(prefs.childAge);
-      if (prefs.childName) setChildName(prefs.childName);
+  const applyPrefs = useCallback((prefs: UserPrefs | null) => {
+    if (!prefs) return;
+    if (prefs.countryCode) {
+      const c = COUNTRIES.find((c) => c.code === prefs.countryCode);
+      if (c) setSelectedCountry(c);
     }
-    setPrefsLoaded(true);
+    if (prefs.location) setLocation(prefs.location);
+    if (prefs.language) setLanguage(prefs.language);
+    if (prefs.childAge) setChildAge(prefs.childAge);
+    if (prefs.childName !== undefined) setChildName(prefs.childName);
+    if (prefs.childConditions !== undefined) setChildConditions(prefs.childConditions);
+    lastSigRef.current = prefsSignature(prefs);
   }, []);
 
-  // Persist personalization whenever it changes (after the initial load).
+  // Load saved personalization on mount, and re-sync live whenever prefs change
+  // elsewhere (client-only, avoids hydration mismatch).
+  useEffect(() => {
+    applyPrefs(loadUserPrefs());
+    setPrefsLoaded(true);
+    const onChange = () => {
+      const pr = loadUserPrefs();
+      if (prefsSignature(pr) !== lastSigRef.current) applyPrefs(pr);
+    };
+    window.addEventListener(PREFS_EVENT, onChange);
+    return () => window.removeEventListener(PREFS_EVENT, onChange);
+  }, [applyPrefs]);
+
+  // Persist personalization whenever it changes (after the initial load). We
+  // record the signature first so our own change event is recognised and skipped.
   useEffect(() => {
     if (!prefsLoaded) return;
-    saveUserPrefs({
-      countryCode: selectedCountry.code,
-      location,
-      language,
-      childAge,
-      childName,
-    });
-  }, [prefsLoaded, selectedCountry, location, language, childAge, childName]);
+    const pr: UserPrefs = { countryCode: selectedCountry.code, location, language, childAge, childName, childConditions };
+    lastSigRef.current = prefsSignature(pr);
+    saveUserPrefs(pr);
+  }, [prefsLoaded, selectedCountry, location, language, childAge, childName, childConditions]);
 
   useEffect(() => {
     setOfflineHistory(getOfflineReportList());
@@ -277,23 +289,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Navbar */}
-      <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
-          <Link href="/" className="text-slate-400 hover:text-white transition p-1">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-          <div className="w-px h-4 bg-slate-600" />
-          <Shield className="text-blue-400 w-5 h-5" />
-          <span className="font-bold text-white">ClimaGuard</span>
-          <span className="hidden sm:inline text-slate-500 text-sm ml-1">/ Risk Dashboard</span>
-          <div className="ml-auto">
-            <Link href="/health" className="text-xs text-slate-300 hover:text-white transition border border-slate-600 hover:border-slate-400 px-3 py-1.5 rounded-lg">
-              Health Advisor
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <ToolNav active="dashboard" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Page header */}

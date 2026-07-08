@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Shield, ArrowLeft, Camera, ChevronDown, Languages } from "lucide-react";
+import { Camera, ChevronDown, Languages } from "lucide-react";
+import ToolNav from "@/components/ToolNav";
 import VisionAnalyzer from "@/components/VisionAnalyzer";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL } from "@/lib/languages";
 import { useUIStrings } from "@/lib/useUIStrings";
@@ -35,28 +35,7 @@ export default function VisionPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Navbar */}
-      <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center gap-3">
-          <Link href="/" className="text-slate-400 hover:text-white transition p-1">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-          <div className="w-px h-4 bg-slate-600" />
-          <Shield className="text-blue-400 w-5 h-5" />
-          <span className="font-bold text-white">ClimaGuard</span>
-          <span className="hidden sm:flex text-slate-500 text-sm ml-1 items-center gap-1.5">
-            / <Camera className="w-3.5 h-3.5 text-violet-400" /> Vision Analyzer
-          </span>
-          <div className="ml-auto hidden sm:flex items-center gap-2">
-            <Link href="/dashboard" className="text-xs text-slate-300 hover:text-white border border-slate-600 hover:border-slate-400 px-3 py-1.5 rounded-lg transition">
-              Risk Dashboard
-            </Link>
-            <Link href="/health" className="text-xs text-slate-300 hover:text-white border border-slate-600 hover:border-slate-400 px-3 py-1.5 rounded-lg transition">
-              Health Advisor
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <ToolNav active="vision" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}

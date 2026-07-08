@@ -21,3 +21,7 @@ body {
 }
 
 .pulse-critical { animation: pulse-ring 2s infinite; }
+
+/* Hide the horizontal scrollbar on the mobile tool-nav strip (still scrollable). */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

@@ -91,27 +91,31 @@ export default function Home() {
 
       {/* Navbar */}
       <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <Shield className="text-blue-300 w-6 h-6" />
-            <span className="text-xl font-bold text-white tracking-tight">ClimaGuard</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="hidden md:flex items-center gap-1">
-              <Link href="/profile" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.myChildren}</Link>
-              <Link href="/offline-guide" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">🔦 {t.helpWithoutInternet}</Link>
-              <Link href="/health" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.myChildIsSick}</Link>
-              <Link href="/vision" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.sendAPhoto}</Link>
-              <Link href="/heatmap" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.worldMap}</Link>
-              <a href="#about" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.about}</a>
-              <Link href="/dashboard" dir="auto" className="ml-2 bg-blue-500 hover:bg-blue-400 text-white text-sm px-5 py-2 rounded-lg transition font-semibold">
-                {t.isMyChildInDanger}
-              </Link>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          {/* Left: logo + primary links, with clear separation between them */}
+          <div className="flex items-center gap-6 lg:gap-10 min-w-0">
+            <Link href="/" className="flex items-center gap-2.5 shrink-0">
+              <Shield className="text-blue-300 w-6 h-6" />
+              <span className="text-xl font-bold text-white tracking-tight">ClimaGuard</span>
+            </Link>
+            <div className="hidden md:flex items-center gap-0.5">
+              <Link href="/profile" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold">{t.myChildren}</Link>
+              <Link href="/offline-guide" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold">🔦 {t.helpWithoutInternet}</Link>
+              <Link href="/health" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold">{t.myChildIsSick}</Link>
+              <Link href="/vision" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold">{t.sendAPhoto}</Link>
+              <Link href="/heatmap" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold">{t.worldMap}</Link>
+              <a href="#about" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold">{t.about}</a>
             </div>
+          </div>
+          {/* Right: primary CTA + language selector */}
+          <div className="flex items-center gap-2 shrink-0">
+            <Link href="/dashboard" dir="auto" className="hidden md:inline-flex bg-blue-500 hover:bg-blue-400 text-white text-sm px-5 py-2.5 rounded-lg transition font-bold shadow-sm">
+              {t.isMyChildInDanger}
+            </Link>
             {/* Keep the language selector reachable on the landing page (it used
                 to live in the removed HelplineBar). */}
             <LanguagePicker theme="dark" />
-            <Link href="/dashboard" dir="auto" className="md:hidden bg-blue-500 text-white text-sm px-3 py-2 rounded-lg font-semibold">
+            <Link href="/dashboard" dir="auto" className="md:hidden bg-blue-500 text-white text-sm px-3 py-2 rounded-lg font-bold">
               {t.isMyChildInDanger}
             </Link>
           </div>
