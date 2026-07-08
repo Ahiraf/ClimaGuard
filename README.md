@@ -5,7 +5,7 @@ Powered by **Google Gemini 2.5 Flash** · Deployed on **Vercel** · 66 high-risk
 
 ### ▶️ Watch the demo
 
-**[▶️ Watch the 5-minute demo video](https://youtu.be/REPLACE_WITH_YOUR_VIDEO_ID)**  ·  **[🌐 Try it live](https://clima-guard-qepp.vercel.app)** *(no login required)*
+**[▶️ Watch the 5-minute demo video](https://youtu.be/07Hz9mUY9_Y)**  ·  **[🌐 Try it live](https://clima-guard-qepp.vercel.app)** *(no login required)*
 
 > _Replace the video link above with your uploaded YouTube URL._
 
