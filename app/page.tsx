@@ -89,29 +89,26 @@ export default function Home() {
       {/* No emergency bar here — the landing page's emergency access is the big
           button in the hero below. Other pages keep the HelplineBar at the top. */}
 
-      {/* Navbar — overlap-proof: logo pinned left, links scroll in the middle,
-          CTA + language selector pinned right. Works at every width. */}
+      {/* Navbar — two rows so nothing gets cut off: logo + language on top,
+          all the tool buttons on their own full-width row below. */}
       <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-        <div className="max-w-6xl mx-auto pl-3 pr-2 sm:px-6 py-3 sm:py-4 flex items-center gap-2 sm:gap-4">
-          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            <Shield className="text-blue-300 w-6 h-6" />
-            <span className="text-lg sm:text-xl font-bold text-white tracking-tight hidden sm:inline">ClimaGuard</span>
-          </Link>
-          <div className="flex-1 min-w-0 overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-1 w-max">
-              {/* Primary action first, as a prominent pill — reachable at every width */}
-              <Link href="/dashboard" dir="auto" className="bg-blue-500 hover:bg-blue-400 text-white text-sm px-4 py-2 rounded-lg transition font-bold shadow-sm whitespace-nowrap">{t.isMyChildInDanger}</Link>
-              <Link href="/health" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.myChildIsSick}</Link>
-              <Link href="/vision" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.sendAPhoto}</Link>
-              <Link href="/heatmap" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.worldMap}</Link>
-              <Link href="/offline-guide" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">🔦 {t.helpWithoutInternet}</Link>
-              <Link href="/profile" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.myChildren}</Link>
-              <a href="#about" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.about}</a>
-            </div>
-          </div>
-          {/* Language selector — pinned right, reachable on the landing page */}
-          <div className="shrink-0">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+          <div className="flex items-center justify-between gap-3">
+            <Link href="/" className="flex items-center gap-2.5 shrink-0">
+              <Shield className="text-blue-300 w-6 h-6" />
+              <span className="text-lg sm:text-xl font-bold text-white tracking-tight">ClimaGuard</span>
+            </Link>
             <LanguagePicker theme="dark" />
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
+            {/* Primary action first, as a prominent pill */}
+            <Link href="/dashboard" dir="auto" className="bg-blue-500 hover:bg-blue-400 text-white text-sm px-4 py-2 rounded-lg transition font-bold shadow-sm whitespace-nowrap">{t.isMyChildInDanger}</Link>
+            <Link href="/health" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.myChildIsSick}</Link>
+            <Link href="/vision" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.sendAPhoto}</Link>
+            <Link href="/heatmap" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.worldMap}</Link>
+            <Link href="/offline-guide" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">🔦 {t.helpWithoutInternet}</Link>
+            <Link href="/profile" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.myChildren}</Link>
+            <a href="#about" dir="auto" className="text-sm text-slate-200 hover:text-white hover:bg-white/10 transition px-3 py-2 rounded-lg font-semibold whitespace-nowrap">{t.about}</a>
           </div>
         </div>
       </nav>
