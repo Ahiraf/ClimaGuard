@@ -13,7 +13,6 @@ import {
   saveProfiles, newChildId, locationForCountry, getActiveChild,
 } from "@/lib/childProfiles";
 import { useUIStrings } from "@/lib/useUIStrings";
-import { getProfileStrings } from "@/lib/profileStrings";
 import { NATIVE_LANGUAGE_NAMES } from "@/lib/uiStrings";
 
 const AGE_OPTIONS = ["Under 1", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"];
@@ -32,8 +31,7 @@ function blankChild(): ChildProfile {
 }
 
 export default function ProfilePage() {
-  const { t, langCode } = useUIStrings();
-  const p = getProfileStrings(langCode);
+  const { t, p } = useUIStrings();
   const [state, setState] = useState<ProfilesState>({ children: [] });
   const [draft, setDraft] = useState<ChildProfile | null>(null);
   const [isNew, setIsNew] = useState(false);

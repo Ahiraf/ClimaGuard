@@ -7,7 +7,11 @@
 // Written for low-literacy readers: short sentences, everyday words, no
 // technical terms ("Calculate", "Vision", "AQI", "offline" are banned here).
 // Coverage: every default language of the 66 UNICEF high-risk countries plus
-// major refugee/migrant languages; anything else falls back to English.
+// major refugee/migrant languages; the remaining selectable languages are
+// filled in by UI_STRINGS_AUTO (AI-generated) and a runtime cache; English is
+// the final fallback.
+
+import { UI_STRINGS_AUTO } from "./uiStringsAuto";
 
 export type UIStrings = {
   // Plain-language navigation (per parent feedback: name the need, not the tool)
@@ -1336,6 +1340,14 @@ const RTL_LANGS = new Set(["ar", "ur", "fa", "prs", "ps", "he", "ku"]);
 
 export const isRTL = (code: string): boolean => RTL_LANGS.has(code);
 
-/** UI strings for a language code, falling back to English. */
+// Runtime-translated languages (fetched on demand for any of the 55 selectable
+// languages not statically bundled, then cached). Populated by useUIStrings.
+export const RUNTIME_UI: Record<string, UIStrings> = {};
+
+/** True when a language's UI is available without a network fetch. */
+export const hasStaticUI = (code: string): boolean =>
+  code in UI_STRINGS || code in UI_STRINGS_AUTO || code in RUNTIME_UI;
+
+/** UI strings for a language code: hand-written → auto-bundled → runtime → English. */
 export const getUIStrings = (code: string): UIStrings =>
-  UI_STRINGS[code] ?? UI_STRINGS.en;
+  UI_STRINGS[code] ?? UI_STRINGS_AUTO[code] ?? RUNTIME_UI[code] ?? UI_STRINGS.en;

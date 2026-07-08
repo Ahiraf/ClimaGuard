@@ -1,7 +1,10 @@
 // Localized chrome for the "My children" (profile) page. Kept separate from
 // uiStrings.ts so that big file stays focused on the emergency path; shared
 // concepts (country, language, age, page title) are reused from uiStrings.
-// Same 23-language coverage as the rest of the UI, English fallback otherwise.
+// Same 23-language coverage as the rest of the UI; remaining selectable
+// languages come from PROFILE_STRINGS_AUTO (AI-generated) and a runtime cache.
+
+import { PROFILE_STRINGS_AUTO } from "./profileStringsAuto";
 
 export type ProfileStrings = {
   backHome: string;
@@ -189,5 +192,8 @@ export const PROFILE_STRINGS: Record<string, ProfileStrings> = {
   },
 };
 
+// Runtime-translated languages (fetched on demand, cached). Populated by useUIStrings.
+export const RUNTIME_PROFILE: Record<string, ProfileStrings> = {};
+
 export const getProfileStrings = (code: string): ProfileStrings =>
-  PROFILE_STRINGS[code] ?? PROFILE_STRINGS.en;
+  PROFILE_STRINGS[code] ?? PROFILE_STRINGS_AUTO[code] ?? RUNTIME_PROFILE[code] ?? PROFILE_STRINGS.en;
