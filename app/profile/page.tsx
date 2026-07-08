@@ -12,6 +12,9 @@ import {
   ChildProfile, ProfilesState, getProfilesLocal, loadProfilesFromCloud,
   saveProfiles, newChildId, locationForCountry, getActiveChild,
 } from "@/lib/childProfiles";
+import { useUIStrings } from "@/lib/useUIStrings";
+import { getProfileStrings } from "@/lib/profileStrings";
+import { NATIVE_LANGUAGE_NAMES } from "@/lib/uiStrings";
 
 const AGE_OPTIONS = ["Under 1", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"];
 
@@ -29,6 +32,8 @@ function blankChild(): ChildProfile {
 }
 
 export default function ProfilePage() {
+  const { t, langCode } = useUIStrings();
+  const p = getProfileStrings(langCode);
   const [state, setState] = useState<ProfilesState>({ children: [] });
   const [draft, setDraft] = useState<ChildProfile | null>(null);
   const [isNew, setIsNew] = useState(false);
@@ -99,21 +104,20 @@ export default function ProfilePage() {
             <Shield className="text-blue-300 w-6 h-6" />
             <span className="text-xl font-bold text-white tracking-tight">ClimaGuard</span>
           </Link>
-          <Link href="/" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
+          <Link href="/" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium inline-flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" /> {p.backHome}
           </Link>
         </div>
       </nav>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 flex items-center gap-2">
-            <UserRound className="w-7 h-7 text-blue-600" /> My Children
+          <h1 dir="auto" className="text-3xl font-bold mb-2 flex items-center gap-2">
+            <UserRound className="w-7 h-7 text-blue-600 shrink-0" /> {t.myChildren}
           </h1>
-          <p className="text-slate-500 text-sm leading-relaxed">
-            Set up each child once — age, location, and language. The <strong>active child</strong> personalizes every tool:
-            risk assessment, health advice, emergency helplines, and the offline guide. Saved to your device and synced across devices.
-            {syncing && <span className="text-slate-400"> · syncing…</span>}
+          <p dir="auto" className="text-slate-500 text-sm leading-relaxed">
+            {p.intro}
+            {syncing && <span className="text-slate-400"> · {p.syncing}</span>}
           </p>
         </div>
 
@@ -130,18 +134,18 @@ export default function ProfilePage() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="font-bold text-slate-900 text-lg">{c.name}</div>
-                    <div className="text-sm text-slate-500">
-                      {c.age === "Under 1" ? "Under 1 year" : `${c.age} years`} · {country?.flag} {country?.name}
+                    <div dir="auto" className="text-sm text-slate-500">
+                      {c.age === "Under 1" ? p.underOne : `${c.age} ${p.years}`} · {country?.flag} {country?.name}
                     </div>
                   </div>
                   {isActive && (
-                    <span className="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-full inline-flex items-center gap-1">
-                      <Check className="w-3 h-3" /> Active
+                    <span dir="auto" className="bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-full inline-flex items-center gap-1 shrink-0">
+                      <Check className="w-3 h-3" /> {p.active}
                     </span>
                   )}
                 </div>
                 <div className="text-xs text-slate-500 space-y-1 mb-4">
-                  <div>Language: <span className="text-slate-700 font-medium">{c.language}</span></div>
+                  <div dir="auto">{t.language}: <span className="text-slate-700 font-medium">{c.language}</span></div>
                   {c.healthConditions && (
                     <div className="flex items-start gap-1.5">
                       <HeartPulse className="w-3.5 h-3.5 text-rose-500 mt-0.5 shrink-0" />
@@ -151,15 +155,15 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   {!isActive && (
-                    <button onClick={() => setActive(c.id)} className="text-sm bg-blue-500 hover:bg-blue-400 text-white px-3 py-1.5 rounded-lg font-semibold transition">
-                      Set active
+                    <button dir="auto" onClick={() => setActive(c.id)} className="text-sm bg-blue-500 hover:bg-blue-400 text-white px-3 py-1.5 rounded-lg font-semibold transition">
+                      {p.setActive}
                     </button>
                   )}
-                  <button onClick={() => openEdit(c)} className="text-sm text-slate-600 hover:bg-slate-100 px-3 py-1.5 rounded-lg font-medium inline-flex items-center gap-1.5">
-                    <Pencil className="w-3.5 h-3.5" /> Edit
+                  <button dir="auto" onClick={() => openEdit(c)} className="text-sm text-slate-600 hover:bg-slate-100 px-3 py-1.5 rounded-lg font-medium inline-flex items-center gap-1.5">
+                    <Pencil className="w-3.5 h-3.5" /> {p.edit}
                   </button>
-                  <button onClick={() => remove(c.id)} className="text-sm text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg font-medium inline-flex items-center gap-1.5 ml-auto">
-                    <Trash2 className="w-3.5 h-3.5" /> Remove
+                  <button dir="auto" onClick={() => remove(c.id)} className="text-sm text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg font-medium inline-flex items-center gap-1.5 ml-auto">
+                    <Trash2 className="w-3.5 h-3.5" /> {p.remove}
                   </button>
                 </div>
               </div>
@@ -173,24 +177,24 @@ export default function ProfilePage() {
               className="rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-400 hover:bg-blue-50/50 p-5 flex flex-col items-center justify-center gap-2 text-slate-500 hover:text-blue-600 transition min-h-[160px]"
             >
               <Plus className="w-7 h-7" />
-              <span className="font-semibold text-sm">Add a child</span>
+              <span dir="auto" className="font-semibold text-sm">{p.addChild}</span>
             </button>
           )}
         </div>
 
         {state.children.length === 0 && !draft && (
-          <p className="text-center text-slate-400 text-sm mb-6">
-            No children added yet — the app still works with defaults. Add a child to personalize every tool.
+          <p dir="auto" className="text-center text-slate-400 text-sm mb-6">
+            {p.noChildren}
           </p>
         )}
 
         {/* Add / edit form */}
         {draft && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
-            <h2 className="font-bold text-lg mb-4">{isNew ? "Add a child" : "Edit child"}</h2>
+            <h2 dir="auto" className="font-bold text-lg mb-4">{isNew ? p.addChild : p.editTitle}</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Child&apos;s name</label>
+                <label dir="auto" className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">{p.nameLabel}</label>
                 <input
                   value={draft.name}
                   onChange={(e) => setDraft({ ...draft, name: e.target.value })}
@@ -199,19 +203,19 @@ export default function ProfilePage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Age</label>
+                <label dir="auto" className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">{t.childAge}</label>
                 <select
                   value={draft.age}
                   onChange={(e) => setDraft({ ...draft, age: e.target.value })}
                   className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
                   {AGE_OPTIONS.map((a) => (
-                    <option key={a} value={a}>{a === "Under 1" ? "Under 1 year" : `${a} years`}</option>
+                    <option key={a} value={a}>{a === "Under 1" ? p.underOne : `${a} ${p.years}`}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Country</label>
+                <label dir="auto" className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">{t.country}</label>
                 <select
                   value={draft.countryCode}
                   onChange={(e) => onDraftCountry(e.target.value)}
@@ -223,19 +227,22 @@ export default function ProfilePage() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">AI Language</label>
+                <label dir="auto" className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">🌐 {t.language}</label>
                 <select
                   value={draft.language}
                   onChange={(e) => setDraft({ ...draft, language: e.target.value })}
                   className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
-                  {SUPPORTED_LANGUAGES_ALPHABETICAL.map((l) => (
-                    <option key={l.code} value={l.name}>{l.name}</option>
-                  ))}
+                  {SUPPORTED_LANGUAGES_ALPHABETICAL.map((l) => {
+                    const native = NATIVE_LANGUAGE_NAMES[l.code];
+                    return (
+                      <option key={l.code} value={l.name}>{native && native !== l.name ? `${native} — ${l.name}` : l.name}</option>
+                    );
+                  })}
                 </select>
               </div>
               <div className="sm:col-span-2">
-                <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Health conditions <span className="normal-case font-normal text-slate-400">(optional)</span></label>
+                <label dir="auto" className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">{p.healthLabel} <span className="normal-case font-normal text-slate-400">({p.optional})</span></label>
                 <input
                   value={draft.healthConditions}
                   onChange={(e) => setDraft({ ...draft, healthConditions: e.target.value })}
@@ -245,11 +252,11 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="flex items-center gap-2 mt-5">
-              <button onClick={saveDraft} className="bg-blue-500 hover:bg-blue-400 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition">
-                {isNew ? "Add child" : "Save changes"}
+              <button dir="auto" onClick={saveDraft} className="bg-blue-500 hover:bg-blue-400 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition">
+                {isNew ? p.addBtn : p.save}
               </button>
-              <button onClick={cancel} className="text-slate-600 hover:bg-slate-100 px-4 py-2.5 rounded-lg font-medium text-sm transition">
-                Cancel
+              <button dir="auto" onClick={cancel} className="text-slate-600 hover:bg-slate-100 px-4 py-2.5 rounded-lg font-medium text-sm transition">
+                {p.cancel}
               </button>
             </div>
           </div>
@@ -257,11 +264,11 @@ export default function ProfilePage() {
 
         {activeChild && (
           <div className="flex flex-wrap gap-3">
-            <Link href="/dashboard" className="bg-[#0f2844] hover:bg-[#163a5f] text-white px-5 py-3 rounded-xl font-semibold text-sm transition">
-              Calculate Risk for {activeChild.name} →
+            <Link href="/dashboard" dir="auto" className="bg-[#0f2844] hover:bg-[#163a5f] text-white px-5 py-3 rounded-xl font-semibold text-sm transition">
+              {p.checkDangerFor} {activeChild.name} →
             </Link>
-            <Link href="/health" className="border border-slate-300 hover:border-slate-400 text-slate-700 px-5 py-3 rounded-xl font-semibold text-sm transition">
-              Ask Health Advisor →
+            <Link href="/health" dir="auto" className="border border-slate-300 hover:border-slate-400 text-slate-700 px-5 py-3 rounded-xl font-semibold text-sm transition">
+              {t.myChildIsSick} →
             </Link>
           </div>
         )}
