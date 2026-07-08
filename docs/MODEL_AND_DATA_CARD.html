@@ -4,35 +4,54 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>MODEL_AND_DATA_CARD</title>
+  <title>ClimaGuard — Model &amp; Data Card</title>
   <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-  </style>
-  <link rel="stylesheet" href="_print.css" />
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+  <style type="text/css">@page { size: A4; margin: 18mm 16mm; }
+body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 11pt; line-height: 1.45; color: #111; max-width: 800px; margin: 0 auto; }
+h1 { font-size: 19pt; margin: 0 0 4px; }
+h2 { font-size: 13.5pt; margin: 16px 0 6px; border-bottom: 1px solid #ddd; padding-bottom: 3px; }
+h3 { font-size: 11.5pt; margin: 12px 0 4px; }
+table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 10pt; }
+th, td { border: 1px solid #bbb; padding: 4px 7px; text-align: left; vertical-align: top; }
+th { background: #f2f4f7; }
+code { background: #f2f4f7; padding: 1px 4px; border-radius: 3px; font-size: 9.5pt; }
+strong { color: #000; }
+img { max-width: 90%; display: block; margin: 10px auto 3px; border: 1px solid #ddd; border-radius: 4px; }
+figure { margin: 12px 0; text-align: center; page-break-inside: avoid; break-inside: avoid; }
+figcaption { font-size: 8.8pt; color: #444; margin-top: 2px; text-align: center; }
+p { margin: 6px 0; }
+h2 { page-break-after: avoid; }
+tr, table { page-break-inside: avoid; }
+</style>
 </head>
 <body>
+<header id="title-block-header">
+<h1 class="title">ClimaGuard — Model &amp; Data Card</h1>
+</header>
 <h1 id="climaguard-model-data-card">ClimaGuard — Model &amp; Data
 Card</h1>
-<p><strong>SciBlitz AI Challenge 2026 · Track B</strong> · One-page
-summary of AI models and data sources.</p>
-<h2 id="models-used">Models Used</h2>
+<p><strong>SciBlitz AI Challenge 2026 · Track B — Environment &amp;
+Sustainability</strong> Live: https://clima-guard-qepp.vercel.app ·
+Repo: https://github.com/Ahiraf/ClimaGuard <em>One-page summary of the
+AI models, data sources, and known limitations of ClimaGuard’s AI
+component.</em></p>
+<h2 id="pre-trained-models-used">Pre-trained Models Used</h2>
 <table>
 <colgroup>
 <col style="width: 25%" />
@@ -44,7 +63,7 @@ summary of AI models and data sources.</p>
 <tr>
 <th>Model</th>
 <th>Provider</th>
-<th>Role</th>
+<th>Role in ClimaGuard</th>
 <th>License / Terms</th>
 </tr>
 </thead>
@@ -52,30 +71,39 @@ summary of AI models and data sources.</p>
 <tr>
 <td><strong>Gemini 2.5 Flash</strong></td>
 <td>Google</td>
-<td>Primary model — text generation, function calling, multi-turn chat,
-multimodal vision; fallback for audio transcription</td>
-<td>Google Gemini API Terms of Service (commercial API,
-pre-trained)</td>
+<td>Primary model — text generation, function calling, multi-turn health
+chat, multimodal vision; UI &amp; offline-guide translation;
+audio-transcription fallback</td>
+<td>Google Gemini API Terms (commercial hosted API, pre-trained)</td>
 </tr>
 <tr>
 <td><strong>gpt-4o-transcribe</strong></td>
 <td>OpenAI</td>
-<td>Primary speech-to-text (the model behind ChatGPT voice)</td>
-<td>OpenAI API Terms of Service (commercial API, pre-trained)</td>
+<td>Primary speech-to-text (the model behind ChatGPT voice) for
+multilingual voice input</td>
+<td>OpenAI API Terms (commercial hosted API, pre-trained)</td>
 </tr>
 <tr>
 <td><strong>GPT-4o</strong></td>
 <td>OpenAI</td>
-<td>Fallback for text &amp; vision when Gemini is
+<td>Fallback for text &amp; vision when all Gemini keys are
 rate-limited/unavailable</td>
-<td>OpenAI API Terms of Service (commercial API, pre-trained)</td>
+<td>OpenAI API Terms (commercial hosted API, pre-trained)</td>
+</tr>
+<tr>
+<td><strong>Browser Web Speech API</strong></td>
+<td>Device / OS</td>
+<td>On-device text-to-speech for read-aloud (works offline)</td>
+<td>Native browser API; device TTS voices</td>
 </tr>
 </tbody>
 </table>
-<p>No models were trained or fine-tuned from scratch. All models are
-used as <strong>pre-trained foundation models via official hosted
-APIs</strong>, called server-side only. API usage costs are borne by the
-team.</p>
+<p><strong>No models were trained or fine-tuned from scratch.</strong>
+All are used as <strong>pre-trained foundation models via official
+hosted APIs</strong>, called <strong>server-side only</strong> (keys
+never exposed to the client). API usage costs are borne by the team.
+Reliability is handled by a multi-provider chain: three Gemini keys →
+OpenAI GPT-4o.</p>
 <h2 id="data-sources">Data Sources</h2>
 <table>
 <colgroup>
@@ -96,65 +124,92 @@ team.</p>
 <tr>
 <td>Live weather &amp; air quality</td>
 <td><strong>Open-Meteo API</strong></td>
-<td>Real-time hazard input to risk assessment</td>
-<td>Free, no key; CC-BY 4.0 attribution</td>
+<td>Real-time hazard input to risk assessment (called by Gemini as a
+tool)</td>
+<td>Free, no key; CC-BY 4.0</td>
 </tr>
 <tr>
-<td>Country → language &amp; coordinates</td>
-<td>Internal (<code>lib/languages.ts</code>), BCP-47 standard</td>
-<td>Localization for 66 countries + 55 AI languages</td>
-<td>Project-authored</td>
+<td>Geocoding / GPS reverse-geocoding</td>
+<td><strong>Open-Meteo Geocoding</strong> · <strong>OpenStreetMap
+Nominatim</strong></td>
+<td>Location search and “Use GPS” place names</td>
+<td>CC-BY 4.0 · ODbL</td>
+</tr>
+<tr>
+<td>Interactive map tiles</td>
+<td><strong>OpenStreetMap</strong> via <strong>Leaflet</strong></td>
+<td>Location picker + global risk heatmap</td>
+<td>ODbL / OSM copyright</td>
+</tr>
+<tr>
+<td>High-risk country list (66) + language/coordinate mapping</td>
+<td><em>UNICEF Children’s Climate Risk Report / CCRR 2026</em>; BCP-47
+language tags</td>
+<td>Country risk selection + localization (55 languages)</td>
+<td>Cited (not redistributed); project-authored mapping</td>
 </tr>
 <tr>
 <td>Emergency helpline numbers</td>
-<td>Internal (<code>lib/emergencyContacts.ts</code>), public official
-sources</td>
-<td>Tap-to-call in each country</td>
-<td>Public information</td>
+<td>National civil-defense / disaster lines + UNICEF child-protection
+lines; <code>112</code> GSM fallback</td>
+<td>Tap-to-call in each of 66 countries, bundled offline</td>
+<td>Publicly published; <strong>verify locally</strong></td>
 </tr>
 <tr>
-<td>User reports (child age, country, symptoms)</td>
+<td>Offline first-aid guidance</td>
+<td>Generic <strong>WHO / UNICEF / Red Cross</strong> first-response
+principles</td>
+<td>Age-banded offline guide (heat, flood, air, cyclone)</td>
+<td>Generic framing; not medical advice</td>
+</tr>
+<tr>
+<td>User reports (child age, location, symptoms, optional photo)</td>
 <td>Generated by app users</td>
-<td>Age-specific guidance; anonymized aggregate heatmap</td>
-<td>Stored under anonymous Firebase auth; no PII names required</td>
-</tr>
-<tr>
-<td>Problem framing</td>
-<td><em>UNICEF Children’s Climate Risk Report</em></td>
-<td>Motivation and country risk selection</td>
-<td>Cited; not redistributed</td>
+<td>Age-specific guidance + anonymized aggregate heatmap</td>
+<td>Anonymous Firebase auth; no names/accounts required</td>
 </tr>
 </tbody>
 </table>
-<p>No third-party training datasets are used — the system relies on
-foundation-model reasoning over live API data, not on a trained
-dataset.</p>
+<p><strong>No third-party training datasets are used.</strong> The
+system reasons over <em>live API data</em>, not a trained dataset.
+Photos submitted for vision analysis are processed in real time and not
+persisted.</p>
 <h2 id="known-limitations-ethical-considerations">Known Limitations
 &amp; Ethical Considerations</h2>
 <ul>
 <li><strong>Not medical advice.</strong> ClimaGuard is a humanitarian
-first-response aid, not a diagnosis tool; this is stated in-product.
-Users are directed to professional care and local emergency
+first-response aid, not a diagnostic tool; this is stated in-product,
+and users are directed to professional care and local emergency
 services.</li>
-<li><strong>AI uncertainty.</strong> Guidance and single-photo vision
-triage can be wrong; outputs are framed as first-response suggestions,
-not clinical conclusions.</li>
-<li><strong>Language variance.</strong> Output quality depends on the
-foundation model’s strength per language; low-resource languages may be
-less reliable.</li>
-<li><strong>Privacy.</strong> Anonymous authentication is used; no user
-names or accounts are required. Reports are minimized to what powers
-guidance and the aggregate heatmap.</li>
+<li><strong>AI uncertainty.</strong> Text guidance and single-photo
+vision triage can be wrong; outputs are framed as first-response
+suggestions, never clinical conclusions, and always include escalation
+(“go to hospital if…”).</li>
+<li><strong>Language &amp; translation variance.</strong> Output quality
+depends on the model’s per-language strength; low-resource languages may
+be less reliable, and AI-translated UI/guidance may contain wording
+errors — mitigated by 23 hand-authored UI languages and English
+fallback.</li>
+<li><strong>Emergency-number accuracy.</strong> Helplines are curated
+public values correct at time of curation; users are prompted to verify
+locally, with <code>112</code> as a universal GSM fallback.</li>
+<li><strong>Privacy.</strong> Anonymous authentication only — no names
+or accounts. Reports are minimized to what powers guidance and the
+aggregate heatmap; photos are not stored.</li>
 <li><strong>Bias &amp; safety.</strong> Prompts use humanitarian,
-age-appropriate framing; the vision route detects and handles model
-safety refusals rather than failing silently.</li>
-<li><strong>Data currency.</strong> Live features require connectivity;
-offline mode preserves the last guidance only.</li>
+age-appropriate framing; the vision route detects model safety refusals
+(e.g. on imagery of minors) and falls back to text-only triage rather
+than failing silently.</li>
+<li><strong>Data currency &amp; connectivity.</strong> Live features
+need internet; offline mode preserves the last cached report, the
+bundled first-aid guide, and tap-to-call helplines.</li>
 </ul>
 <h2 id="attribution">Attribution</h2>
-<p>Gemini (Google), GPT-4o &amp; gpt-4o-transcribe (OpenAI), Open-Meteo
-(weather/air quality, CC-BY 4.0), Leaflet + OpenStreetMap (maps),
-Firebase &amp; BigQuery (Google). All third-party resources are also
-listed in the repository <code>README.md</code>.</p>
+<p>Gemini 2.5 Flash (Google); GPT-4o &amp; gpt-4o-transcribe (OpenAI);
+Open-Meteo (weather/air quality, CC-BY 4.0); OpenStreetMap / Nominatim /
+Leaflet (maps &amp; geocoding, ODbL); Firebase, Firestore, BigQuery,
+Cloud Messaging (Google Cloud); UNICEF CCRR 2026 (problem framing &amp;
+country set, cited). Full detail in the repository
+<code>README.md</code>.</p>
 </body>
 </html>
