@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Siren, ChevronDown, X } from "lucide-react";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL } from "@/lib/languages";
+import { getNativeCountryName } from "@/lib/uiStrings";
 import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
 import { useUIStrings } from "@/lib/useUIStrings";
 import EmergencyHelplines from "@/components/EmergencyHelplines";
@@ -63,7 +64,7 @@ export default function HelplineBar() {
             >
               {COUNTRIES_ALPHABETICAL.map((c) => (
                 <option key={c.code} value={c.code} className="text-slate-900">
-                  {c.flag} {c.name}
+                  {c.flag} {getNativeCountryName(c.code, c.name)}
                 </option>
               ))}
             </select>

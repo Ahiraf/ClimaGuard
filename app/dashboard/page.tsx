@@ -13,7 +13,7 @@ import EmergencyActionBanner from "@/components/EmergencyActionBanner";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
 import { saveReportToFirestore, getReportsFromFirestore, FirestoreReport } from "@/lib/firestoreReports";
 import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
-import { getUIStrings, NATIVE_LANGUAGE_NAMES } from "@/lib/uiStrings";
+import { getUIStrings, NATIVE_LANGUAGE_NAMES, getNativeCountryName } from "@/lib/uiStrings";
 import { useUIStrings } from "@/lib/useUIStrings";
 
 type RiskLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
@@ -326,7 +326,9 @@ export default function Dashboard() {
                 onChange={e => handleCountryChange(e.target.value)}
               >
                 {COUNTRIES_ALPHABETICAL.map(c => (
-                  <option key={c.code} value={c.code}>{c.flag} {c.name} — {c.language}</option>
+                  <option key={c.code} value={c.code}>
+                    {c.flag} {getNativeCountryName(c.code, c.name)} — {NATIVE_LANGUAGE_NAMES[c.languageCode] ?? c.language}
+                  </option>
                 ))}
               </select>
             </div>

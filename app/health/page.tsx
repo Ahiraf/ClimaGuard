@@ -7,7 +7,7 @@ import { Shield, ArrowLeft, Send, Heart, AlertTriangle, Mic, MicOff, Loader2 } f
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL, getLanguageCode } from "@/lib/languages";
 import SpeakButton from "@/components/SpeakButton";
 import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
-import { getUIStrings, NATIVE_LANGUAGE_NAMES } from "@/lib/uiStrings";
+import { getUIStrings, NATIVE_LANGUAGE_NAMES, getNativeCountryName } from "@/lib/uiStrings";
 
 type Message = { role: "user" | "assistant"; text: string };
 
@@ -265,7 +265,7 @@ function HealthAdvisorContent() {
                 onChange={e => handleCountryChange(e.target.value)}
               >
                 {COUNTRIES_ALPHABETICAL.map(c => (
-                  <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
+                  <option key={c.code} value={c.code}>{c.flag} {getNativeCountryName(c.code, c.name)}</option>
                 ))}
               </select>
             </div>

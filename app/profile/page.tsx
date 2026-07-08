@@ -13,7 +13,7 @@ import {
   saveProfiles, newChildId, locationForCountry, getActiveChild,
 } from "@/lib/childProfiles";
 import { useUIStrings } from "@/lib/useUIStrings";
-import { NATIVE_LANGUAGE_NAMES } from "@/lib/uiStrings";
+import { NATIVE_LANGUAGE_NAMES, getNativeCountryName } from "@/lib/uiStrings";
 
 const AGE_OPTIONS = ["Under 1", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"];
 
@@ -220,7 +220,7 @@ export default function ProfilePage() {
                   className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
                   {COUNTRIES_ALPHABETICAL.map((c) => (
-                    <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
+                    <option key={c.code} value={c.code}>{c.flag} {getNativeCountryName(c.code, c.name)}</option>
                   ))}
                 </select>
               </div>

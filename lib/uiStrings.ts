@@ -1336,6 +1336,26 @@ export const NATIVE_LANGUAGE_NAMES: Record<string, string> = {
   it: "Italiano", nl: "Nederlands", pl: "Polski", el: "Ελληνικά", he: "עברית",
 };
 
+// Native (endonym) country names by country code, so a parent who cannot read
+// English (Latin) still recognises their own country written in their own
+// script. Only entries that differ from the English name are listed; everything
+// else falls back to the English name (which is Latin and readable alongside the
+// flag). See getNativeCountryName.
+export const NATIVE_COUNTRY_NAMES: Record<string, string> = {
+  BD: "বাংলাদেশ", IN: "भारत", PK: "پاکستان", NG: "Najeriya", EG: "مصر",
+  SD: "السودان", ET: "ኢትዮጵያ", SO: "Soomaaliya", CF: "Centrafrique",
+  MG: "Madagasikara", PH: "Pilipinas", PE: "Perú", PG: "Papua Niugini",
+  MM: "မြန်မာ", AF: "افغانستان", TD: "Tchad", KH: "កម្ពុជា", MZ: "Moçambique",
+  IR: "ایران", LA: "ລາວ", YE: "اليمن", IQ: "العراق", MR: "موريتانيا",
+  TM: "Türkmenistan", CD: "RD Congo", ER: "ኤርትራ", SY: "سوريا", CM: "Cameroun",
+  GN: "Guinée", LY: "ليبيا", TJ: "Тоҷикистон", HT: "Haïti", KP: "조선",
+  GW: "Guiné-Bissau", GQ: "Guinea Ecuatorial", LB: "لبنان", KM: "جزر القمر",
+};
+
+/** Country name in its own language/script, falling back to the English name. */
+export const getNativeCountryName = (code: string, english: string): string =>
+  NATIVE_COUNTRY_NAMES[code] ?? english;
+
 const RTL_LANGS = new Set(["ar", "ur", "fa", "prs", "ps", "he", "ku"]);
 
 export const isRTL = (code: string): boolean => RTL_LANGS.has(code);

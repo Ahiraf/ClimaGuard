@@ -6,6 +6,7 @@ import { Shield, ArrowLeft, Camera, ChevronDown } from "lucide-react";
 import VisionAnalyzer from "@/components/VisionAnalyzer";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo } from "@/lib/languages";
 import { useUIStrings } from "@/lib/useUIStrings";
+import { NATIVE_LANGUAGE_NAMES, getNativeCountryName } from "@/lib/uiStrings";
 
 export default function VisionPage() {
   const { t } = useUIStrings();
@@ -69,7 +70,7 @@ export default function VisionPage() {
                 >
                   {COUNTRIES_ALPHABETICAL.map((c) => (
                     <option key={c.code} value={c.code}>
-                      {c.flag} {c.name} — {c.language}
+                      {c.flag} {getNativeCountryName(c.code, c.name)} — {NATIVE_LANGUAGE_NAMES[c.languageCode] ?? c.language}
                     </option>
                   ))}
                 </select>
