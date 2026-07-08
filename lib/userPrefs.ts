@@ -18,6 +18,9 @@ export type UserPrefs = {
   childAge?: string;
   childName?: string;
   childConditions?: string;
+  // True once the parent has actively chosen a country (emergency selector,
+  // dashboard, profile…). Until then, picking a language sets a default country.
+  countryExplicit?: boolean;
 };
 
 const KEY = "climaguard_prefs";

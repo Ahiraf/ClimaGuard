@@ -214,6 +214,7 @@ function HealthAdvisorContent() {
     const country = COUNTRIES.find(c => c.code === code)!;
     setSelectedCountry(country);
     changeLanguage(country.language);
+    saveUserPrefs({ countryExplicit: true }); // deliberate choice — don't let a language pick override it
   };
 
   // Interface strings follow the selected AI language, so the path TO the mic

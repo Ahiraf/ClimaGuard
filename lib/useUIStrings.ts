@@ -12,7 +12,7 @@
 // a moment, then swaps and is instant/offline afterwards.
 
 import { useEffect, useState, useCallback } from "react";
-import { SUPPORTED_LANGUAGES, getLanguageCode } from "@/lib/languages";
+import { SUPPORTED_LANGUAGES, getLanguageCode, countryForLanguage } from "@/lib/languages";
 import {
   getUIStrings, isRTL, hasStaticUI, RUNTIME_UI, type UIStrings,
 } from "@/lib/uiStrings";
@@ -119,8 +119,18 @@ export function useUIStrings(): {
 
   const setUILanguage = useCallback((name: string) => {
     setLangName(name);
-    saveUserPrefs({ language: name });
-    window.dispatchEvent(new Event(PREFS_EVENT));
+    // Picking a language also sets a sensible default country (so emergency
+    // numbers match), but never overrides a country the parent chose themselves.
+    const prefs = loadUserPrefs();
+    const patch: Parameters<typeof saveUserPrefs>[0] = { language: name };
+    if (!prefs?.countryExplicit) {
+      const c = countryForLanguage(name);
+      if (c) {
+        patch.countryCode = c.code;
+        patch.location = { name: c.capital, country: c.name, lat: c.lat, lon: c.lon, displayName: `${c.capital}, ${c.name}` };
+      }
+    }
+    saveUserPrefs(patch);
   }, []);
 
   return {

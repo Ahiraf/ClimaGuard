@@ -157,6 +157,15 @@ export const getLanguageCode = (name: string): string =>
   ?? COUNTRIES.find((c) => c.language === name)?.languageCode
   ?? "en";
 
+// The most likely country for a chosen language — used as a sensible default so
+// that picking e.g. "Filipino" surfaces the Philippines' emergency numbers,
+// until the parent explicitly chooses a country of their own.
+export const countryForLanguage = (languageName: string): CountryInfo | undefined => {
+  const code = getLanguageCode(languageName);
+  return COUNTRIES.find((c) => c.language === languageName)
+    ?? COUNTRIES.find((c) => c.languageCode === code);
+};
+
 export const getRiskLabel = (language: string, risk: string): string => {
   const labels: Record<string, Record<string, string>> = {
     bn: { LOW: "কম ঝুঁকি", MEDIUM: "মাঝারি ঝুঁকি", HIGH: "উচ্চ ঝুঁকি", CRITICAL: "জরুরি বিপদ" },

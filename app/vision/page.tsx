@@ -87,7 +87,7 @@ export default function VisionPage() {
                   value={country.code}
                   onChange={(e) => {
                     const next = COUNTRIES.find((c) => c.code === e.target.value);
-                    if (next) setCountry(next);
+                    if (next) { setCountry(next); saveUserPrefs({ countryCode: next.code, countryExplicit: true }); }
                   }}
                   className="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-9 text-sm text-slate-900 focus:outline-none focus:border-violet-400"
                 >

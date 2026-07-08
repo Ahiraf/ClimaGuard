@@ -49,6 +49,7 @@ export default function HelplineBar() {
                   setCountry(next);
                   saveUserPrefs({
                     countryCode: next.code,
+                    countryExplicit: true,
                     location: {
                       name: next.capital,
                       country: next.name,

@@ -226,6 +226,7 @@ export default function Dashboard() {
       lon: c.lon,
       displayName: `${c.capital}, ${c.name}`,
     });
+    saveUserPrefs({ countryExplicit: true }); // deliberate choice — don't let a language pick override it
   };
 
   const analyze = async () => {

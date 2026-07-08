@@ -74,6 +74,7 @@ export function applyActiveChildToPrefs(state: ProfilesState): void {
   if (!child) return;
   saveUserPrefs({
     countryCode: child.countryCode,
+    countryExplicit: true, // a child's country is a deliberate choice
     location: child.location,
     language: child.language,
     childAge: child.age,
