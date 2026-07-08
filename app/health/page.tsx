@@ -7,6 +7,7 @@ import { Shield, ArrowLeft, Send, Heart, AlertTriangle, Mic, MicOff, Loader2 } f
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo, SUPPORTED_LANGUAGES, SUPPORTED_LANGUAGES_ALPHABETICAL, getLanguageCode } from "@/lib/languages";
 import SpeakButton from "@/components/SpeakButton";
 import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
+import { getUIStrings, NATIVE_LANGUAGE_NAMES } from "@/lib/uiStrings";
 
 type Message = { role: "user" | "assistant"; text: string };
 
@@ -201,6 +202,10 @@ function HealthAdvisorContent() {
     changeLanguage(country.language);
   };
 
+  // Interface strings follow the selected AI language, so the path TO the mic
+  // is as readable as the AI's answer (critical for non-English readers).
+  const tUI = getUIStrings(getLanguageCode(language));
+
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return;
     if (isRecording) stopRecording();
@@ -253,7 +258,7 @@ function HealthAdvisorContent() {
         <div className="bg-white rounded-2xl border border-slate-200 p-5 mb-4 shadow-sm">
           <div className="grid md:grid-cols-3 gap-4 items-end">
             <div>
-              <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Country</label>
+              <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">{tUI.country}</label>
               <select
                 className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
                 value={selectedCountry.code}
@@ -265,7 +270,7 @@ function HealthAdvisorContent() {
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">Child&apos;s Age</label>
+              <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">{tUI.childAge}</label>
               <select
                 className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
                 value={age}
@@ -277,7 +282,7 @@ function HealthAdvisorContent() {
               </select>
             </div>
             <div>
-              <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">AI Language <span className="normal-case font-normal">({SUPPORTED_LANGUAGES.length}+)</span></label>
+              <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">🌐 {tUI.language} <span className="normal-case font-normal">({SUPPORTED_LANGUAGES.length}+)</span></label>
               <div className="flex gap-2">
                 <select
                   className="flex-1 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
@@ -285,7 +290,7 @@ function HealthAdvisorContent() {
                   onChange={e => changeLanguage(e.target.value)}
                 >
                   {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => (
-                    <option key={l.code} value={l.name}>{l.name}</option>
+                    <option key={l.code} value={l.name}>{NATIVE_LANGUAGE_NAMES[l.code] ?? l.name}</option>
                   ))}
                 </select>
                 {messages.length > 0 && (
@@ -309,16 +314,35 @@ function HealthAdvisorContent() {
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
             {messages.length === 0 && (
               <div className="text-center py-10">
-                <div className="w-14 h-14 bg-red-50 border border-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Heart className="w-7 h-7 text-red-400" />
-                </div>
-                <h3 className="font-bold text-slate-800 mb-2">AI Health Advisor</h3>
-                <p className="text-sm text-slate-500 mb-1.5 max-w-sm mx-auto leading-relaxed">
+                <h3 dir="auto" className="font-bold text-slate-800 text-xl mb-1.5">{tUI.myChildIsSick}</h3>
+                <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto leading-relaxed">
                   Describe {childName ? `${childName}'s` : "your child's"} symptoms in any language. I&apos;ll identify climate-linked health issues and guide you on next steps.
                 </p>
-                <p className="text-xs text-slate-400 mb-7">
-                  Tap the mic · Speak in your language · Tap again to transcribe
+
+                {/* Big animated mic — the visual cue reaches parents the English
+                    caption never could. Pulsing rings say "tap me" without words. */}
+                <button
+                  onClick={toggleRecording}
+                  disabled={loading || isTranscribing}
+                  className="relative w-24 h-24 mx-auto mb-4 flex items-center justify-center"
+                  aria-label={tUI.tapMicSpeak}
+                >
+                  {!isRecording && (
+                    <>
+                      <span className="absolute inset-0 rounded-full bg-red-400/30 animate-ping" />
+                      <span className="absolute inset-2 rounded-full bg-red-400/20 animate-pulse" />
+                    </>
+                  )}
+                  <span className={`relative w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition ${
+                    isRecording ? "bg-red-600 scale-110" : "bg-red-500 hover:bg-red-600"
+                  }`}>
+                    {isRecording ? <MicOff className="w-8 h-8 text-white" /> : <Mic className="w-8 h-8 text-white" />}
+                  </span>
+                </button>
+                <p dir="auto" className="text-base font-semibold text-red-600 mb-7 max-w-xs mx-auto leading-snug">
+                  🎤 {isRecording ? tUI.recording : tUI.tapMicSpeak}
                 </p>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-lg mx-auto">
                   {quickSymptoms.map(s => (
                     <button key={s} onClick={() => sendMessage(s)}
@@ -345,7 +369,7 @@ function HealthAdvisorContent() {
                   <div className="whitespace-pre-wrap">{msg.text}</div>
                   {msg.role === "assistant" && (
                     <div className="mt-2.5">
-                      <SpeakButton text={msg.text} langCode={getLanguageCode(language)} label="Listen" />
+                      <SpeakButton text={msg.text} langCode={getLanguageCode(language)} label={tUI.listen} className="text-sm px-4 py-2" />
                     </div>
                   )}
                 </div>
@@ -374,10 +398,9 @@ function HealthAdvisorContent() {
             {isRecording && (
               <div className="flex items-center gap-2 mb-3 bg-red-50 border border-red-200 rounded-xl px-3.5 py-2.5">
                 <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
-                <span className="text-xs text-red-700 font-semibold">
-                  Recording · {recordingSeconds}s
+                <span dir="auto" className="text-xs text-red-700 font-semibold">
+                  {tUI.recording} · {recordingSeconds}s
                 </span>
-                <span className="text-xs text-red-400 ml-auto">Tap mic to stop</span>
               </div>
             )}
             {isTranscribing && (
@@ -399,19 +422,19 @@ function HealthAdvisorContent() {
                 onClick={toggleRecording}
                 disabled={loading || isTranscribing}
                 title={isRecording ? "Tap to stop & transcribe" : `Tap to record in ${language}`}
-                className={`px-3.5 py-2.5 rounded-xl transition-all disabled:opacity-40 flex-shrink-0 select-none ${
+                className={`px-4 py-2.5 rounded-xl transition-all disabled:opacity-40 flex-shrink-0 select-none ${
                   isRecording
                     ? "bg-red-500 text-white shadow-md scale-105"
                     : isTranscribing
                     ? "bg-blue-500 text-white"
-                    : "bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-600 border border-slate-200"
+                    : "bg-red-50 text-red-600 hover:bg-red-100 border-2 border-red-300 animate-pulse"
                 }`}
               >
                 {isTranscribing
-                  ? <Loader2 className="w-4 h-4 animate-spin" />
+                  ? <Loader2 className="w-5 h-5 animate-spin" />
                   : isRecording
-                  ? <MicOff className="w-4 h-4" />
-                  : <Mic className="w-4 h-4" />
+                  ? <MicOff className="w-5 h-5" />
+                  : <Mic className="w-5 h-5" />
                 }
               </button>
 
@@ -420,10 +443,11 @@ function HealthAdvisorContent() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), sendMessage(input))}
+                dir="auto"
                 placeholder={
-                  isRecording ? `Recording... tap mic to stop`
-                  : isTranscribing ? "Transcribing your voice..."
-                  : `Describe symptoms in ${language} or English...`
+                  isRecording ? tUI.recording
+                  : isTranscribing ? "…"
+                  : tUI.typeOrSpeak
                 }
                 className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 placeholder-slate-400 shadow-sm"
                 disabled={loading || isRecording || isTranscribing}
@@ -437,8 +461,8 @@ function HealthAdvisorContent() {
                 <Send className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-slate-400 mt-2.5 text-center">
-              Tap mic to record · Tap again to transcribe with AI · Works in any language
+            <p dir="auto" className="text-sm text-red-500 font-medium mt-2.5 text-center">
+              🎤 {tUI.tapMicSpeak}
             </p>
           </div>
         </div>

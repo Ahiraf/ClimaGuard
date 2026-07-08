@@ -13,6 +13,8 @@ import EmergencyActionBanner from "@/components/EmergencyActionBanner";
 import LocationPicker, { LocationResult } from "@/components/LocationPicker";
 import { saveReportToFirestore, getReportsFromFirestore, FirestoreReport } from "@/lib/firestoreReports";
 import { loadUserPrefs, saveUserPrefs } from "@/lib/userPrefs";
+import { getUIStrings, NATIVE_LANGUAGE_NAMES } from "@/lib/uiStrings";
+import { useUIStrings } from "@/lib/useUIStrings";
 
 type RiskLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
@@ -57,6 +59,7 @@ const defaultLocation: LocationResult = {
 };
 
 export default function Dashboard() {
+  const { t } = useUIStrings();
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [location, setLocation] = useState<LocationResult>(defaultLocation);
   const [childAge, setChildAge] = useState("5");
@@ -263,6 +266,16 @@ export default function Dashboard() {
 
   const risk = result ? riskConfig[result.overallRisk] : null;
 
+  // Result-area strings follow the report's output language (synced with
+  // prefs), so the plain-language sentences match the AI answer's language.
+  const tOut = getUIStrings(getLanguageCode(language));
+  const riskSentence: Record<RiskLevel, string> = {
+    LOW: tOut.riskLow,
+    MEDIUM: tOut.riskMedium,
+    HIGH: tOut.riskHigh,
+    CRITICAL: tOut.riskCritical,
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Navbar */}
@@ -286,8 +299,8 @@ export default function Dashboard() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Page header */}
         <div className="mb-6 sm:mb-7">
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">Child Climate Risk Assessment</h1>
-          <p className="text-xs sm:text-sm text-slate-500">Real-time hazard analysis · Gemini AI · Open-Meteo weather data · GPS-precise location</p>
+          <h1 dir="auto" className="text-xl sm:text-2xl font-bold text-slate-900 mb-1">{t.isMyChildInDanger}</h1>
+          <p className="text-xs sm:text-sm text-slate-500">Child Climate Risk Assessment · Gemini AI · Open-Meteo weather data · GPS-precise location</p>
         </div>
 
         <OfflineReportBanner />
@@ -342,8 +355,8 @@ export default function Dashboard() {
           </div>
 
           <div className="mb-5">
-            <label className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">
-              AI Response Language <span className="normal-case font-normal">(any of {SUPPORTED_LANGUAGES.length}+ languages)</span>
+            <label dir="auto" className="text-xs font-semibold text-slate-500 mb-2 block uppercase tracking-wider">
+              🌐 {t.language} <span className="normal-case font-normal">(any of {SUPPORTED_LANGUAGES.length}+ languages)</span>
             </label>
             <select
               className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm"
@@ -351,7 +364,7 @@ export default function Dashboard() {
               onChange={e => setLanguage(e.target.value)}
             >
               {SUPPORTED_LANGUAGES_ALPHABETICAL.map(l => (
-                <option key={l.code} value={l.name}>{l.name}</option>
+                <option key={l.code} value={l.name}>{NATIVE_LANGUAGE_NAMES[l.code] ?? l.name}</option>
               ))}
             </select>
             <p className="text-xs text-slate-400 mt-1.5">Defaults to your country&apos;s language — change it to get the report in any language.</p>
@@ -396,8 +409,8 @@ export default function Dashboard() {
               className="w-full sm:w-auto bg-[#0f2844] hover:bg-[#1a3a6b] text-white px-7 py-2.5 rounded-xl font-semibold transition disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm text-sm"
             >
               {loading
-                ? <><RefreshCw className="w-4 h-4 animate-spin" /> Analyzing with Gemini AI...</>
-                : <><AlertTriangle className="w-4 h-4" /> Analyze Climate Risk</>}
+                ? <><RefreshCw className="w-4 h-4 animate-spin" /> <span dir="auto">{t.checking}</span></>
+                : <><AlertTriangle className="w-4 h-4" /> <span dir="auto">{t.checkNow} — {t.isMyChildInDanger}</span></>}
             </button>
           </div>
         </div>
@@ -425,6 +438,14 @@ export default function Dashboard() {
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Overall Risk Level</div>
                   <div className={`text-4xl font-black ${risk.color} mb-2`}>{risk.label}</div>
+                  {/* Plain-language meaning of the badge — the sentence a parent
+                      actually needs, in the report language, with read-aloud. */}
+                  <div className="flex items-center gap-3 flex-wrap mb-2">
+                    <p dir="auto" className={`text-lg sm:text-xl font-bold ${risk.color}`}>
+                      {riskSentence[result.overallRisk]}
+                    </p>
+                    <SpeakButton text={riskSentence[result.overallRisk]} langCode={getLanguageCode(language)} label={tOut.listen} />
+                  </div>
                   <div className="text-sm text-slate-600 flex items-center gap-1.5 flex-wrap">
                     <span>{selectedCountry.flag}</span>
                     <span>{location.displayName}</span>
@@ -440,22 +461,34 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Weather Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {/* Weather Grid — color + one plain sentence first, numbers demoted
+                to small print. A parent who has never heard of "UV" or "AQI"
+                still knows what to do (child-calibrated thresholds). */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { icon: Thermometer, label: "Temperature", value: `${result.weather.temperature}°C`, sub: `Precipitation: ${result.weather.precipitation}mm` },
-                { icon: Droplets,    label: "Humidity",    value: `${result.weather.humidity}%`,     sub: `Wind: ${result.weather.wind_speed} km/h` },
-                { icon: Wind,        label: "UV Index",    value: `${result.weather.uv_index}`,      sub: result.weather.uv_index > 7 ? "High UV — seek shade" : "Moderate UV" },
-                { icon: Eye,         label: "Air Quality", value: result.weather.air_quality_index ? `AQI ${result.weather.air_quality_index}` : "N/A",
-                  sub: result.weather.air_quality_index && result.weather.air_quality_index > 100 ? "Poor — limit outdoor time" : "Acceptable" },
+                { icon: Thermometer, label: tOut.heatLabel, danger: result.weather.temperature >= 35,
+                  sentence: result.weather.temperature >= 35 ? tOut.heatDanger : tOut.heatOk,
+                  detail: `${result.weather.temperature}°C · ${result.weather.humidity}%` },
+                { icon: Wind, label: tOut.sunLabel, danger: result.weather.uv_index >= 8,
+                  sentence: result.weather.uv_index >= 8 ? tOut.sunDanger : tOut.sunOk,
+                  detail: `UV ${result.weather.uv_index}` },
+                { icon: Eye, label: tOut.airLabel, danger: (result.weather.air_quality_index ?? 0) > 100,
+                  sentence: (result.weather.air_quality_index ?? 0) > 100 ? tOut.airDanger : tOut.airOk,
+                  detail: result.weather.air_quality_index ? `AQI ${result.weather.air_quality_index}` : "—" },
+                { icon: Droplets, label: tOut.rainLabel, danger: result.weather.precipitation >= 10,
+                  sentence: result.weather.precipitation >= 10 ? tOut.rainDanger : tOut.rainOk,
+                  detail: `${result.weather.precipitation}mm · ${result.weather.wind_speed} km/h` },
               ].map(s => (
-                <div key={s.label} className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-                  <div className="flex items-center gap-1.5 mb-3">
-                    <s.icon className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">{s.label}</span>
+                <div key={s.label} className={`rounded-xl border-2 p-4 shadow-sm ${s.danger ? "bg-red-50 border-red-300" : "bg-emerald-50 border-emerald-200"}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`w-3 h-3 rounded-full shrink-0 ${s.danger ? "bg-red-500 animate-pulse" : "bg-emerald-500"}`} />
+                    <s.icon className={`w-4 h-4 ${s.danger ? "text-red-600" : "text-emerald-600"}`} />
+                    <span dir="auto" className={`text-sm font-bold ${s.danger ? "text-red-800" : "text-emerald-800"}`}>{s.label}</span>
+                    <span className="text-xs text-slate-400 ml-auto tabular-nums">{s.detail}</span>
                   </div>
-                  <div className="text-2xl font-bold text-slate-900 mb-0.5">{s.value}</div>
-                  <div className="text-xs text-slate-400 leading-tight">{s.sub}</div>
+                  <p dir="auto" className={`text-base font-semibold leading-snug ${s.danger ? "text-red-800" : "text-emerald-800"}`}>
+                    {s.sentence}
+                  </p>
                 </div>
               ))}
             </div>
@@ -491,7 +524,7 @@ export default function Dashboard() {
                   <p className="text-xs text-slate-400">Personalized for {childName || "your child"} · {language}</p>
                 </div>
                 <div className="ml-auto">
-                  <SpeakButton text={result.analysis} langCode={getLanguageCode(language)} />
+                  <SpeakButton text={result.analysis} langCode={getLanguageCode(language)} label={tOut.listen} className="text-sm px-4 py-2" />
                 </div>
               </div>
               <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{result.analysis}</div>

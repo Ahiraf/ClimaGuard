@@ -5,8 +5,10 @@ import Link from "next/link";
 import { Shield, ArrowLeft, Camera, ChevronDown } from "lucide-react";
 import VisionAnalyzer from "@/components/VisionAnalyzer";
 import { COUNTRIES, COUNTRIES_ALPHABETICAL, CountryInfo } from "@/lib/languages";
+import { useUIStrings } from "@/lib/useUIStrings";
 
 export default function VisionPage() {
+  const { t } = useUIStrings();
   const [country, setCountry] = useState<CountryInfo>(COUNTRIES[0]);
   const [childName, setChildName] = useState("");
   const [childAge, setChildAge] = useState("5");
@@ -42,7 +44,7 @@ export default function VisionPage() {
           <div className="inline-flex items-center gap-2 bg-violet-50 border border-violet-200 text-violet-700 text-xs px-3 py-1.5 rounded-lg font-medium mb-4">
             <Camera className="w-3.5 h-3.5" /> Powered by Google Gemini Vision
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Gemini Vision Analyzer</h1>
+          <h1 dir="auto" className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">📷 {t.sendAPhoto}</h1>
           <p className="text-slate-500 max-w-2xl leading-relaxed">
             Upload a photo of a skin condition, flood damage, smoke, or surroundings.
             Gemini analyzes the image and responds in your local language with child-specific guidance.

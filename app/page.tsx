@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Shield, Heart, Globe, AlertTriangle, Zap, ChevronRight,
@@ -6,6 +8,8 @@ import {
   Users, UserRound, Volume2, PhoneCall, MessageSquare, Languages,
 } from "lucide-react";
 import HelplineBar from "@/components/HelplineBar";
+import EmergencyBigButton from "@/components/EmergencyBigButton";
+import { useUIStrings } from "@/lib/useUIStrings";
 
 const stats = [
   { value: "1.1B", label: "Children exposed to 3+ climate hazards" },
@@ -80,6 +84,7 @@ const emergencyScenarios = [
 ];
 
 export default function Home() {
+  const { t } = useUIStrings();
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       {/* Emergency Helplines bar — always at the top */}
@@ -93,19 +98,18 @@ export default function Home() {
             <span className="text-xl font-bold text-white tracking-tight">ClimaGuard</span>
           </div>
           <div className="hidden md:flex items-center gap-1">
-            <Link href="/profile" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">My Children</Link>
-            <Link href="/dashboard" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Calculate Risk</Link>
-            <Link href="/offline-guide" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Offline Guide</Link>
-            <Link href="/health" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Health Advisor</Link>
-            <Link href="/vision" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Vision Analyzer</Link>
-            <Link href="/heatmap" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">Global Map</Link>
+            <Link href="/profile" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.myChildren}</Link>
+            <Link href="/offline-guide" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">🔦 {t.helpWithoutInternet}</Link>
+            <Link href="/health" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.myChildIsSick}</Link>
+            <Link href="/vision" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.sendAPhoto}</Link>
+            <Link href="/heatmap" dir="auto" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">{t.worldMap}</Link>
             <a href="#about" className="text-sm text-slate-300 hover:text-white hover:bg-white/10 transition px-4 py-2 rounded-lg font-medium">About</a>
-            <Link href="/dashboard" className="ml-2 bg-blue-500 hover:bg-blue-400 text-white text-sm px-5 py-2 rounded-lg transition font-semibold">
-              Get Started
+            <Link href="/dashboard" dir="auto" className="ml-2 bg-blue-500 hover:bg-blue-400 text-white text-sm px-5 py-2 rounded-lg transition font-semibold">
+              {t.isMyChildInDanger}
             </Link>
           </div>
-          <Link href="/dashboard" className="md:hidden bg-blue-500 text-white text-sm px-4 py-2 rounded-lg font-semibold">
-            Open App
+          <Link href="/dashboard" dir="auto" className="md:hidden bg-blue-500 text-white text-sm px-4 py-2 rounded-lg font-semibold">
+            {t.isMyChildInDanger}
           </Link>
         </div>
       </nav>
@@ -116,13 +120,17 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 bg-blue-900/60 border border-blue-700/50 text-blue-300 text-xs px-3 sm:px-4 py-2 rounded-full mb-6 sm:mb-8 font-medium tracking-wide uppercase flex-wrap justify-center">
             <Zap className="w-3.5 h-3.5 shrink-0" /> <span>Powered by Google Gemini API · UNICEF Climate Risk Report 2026</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6 tracking-tight">
-            Protecting Children from<br />
-            <span className="text-blue-400">Climate Hazards</span>
+          <h1 dir="auto" className="text-4xl md:text-6xl font-bold leading-tight mb-6 tracking-tight">
+            {t.heroTitle}
           </h1>
-          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2 sm:px-0">
-            Real-time AI-powered climate risk alerts and health guidance for children in the world's most vulnerable regions — in their own language, even offline.
+          <p dir="auto" className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed px-2 sm:px-0">
+            {t.heroSub}
           </p>
+
+          {/* One big button for a parent in a panic — before any other choice */}
+          <div className="mb-10 sm:mb-14">
+            <EmergencyBigButton />
+          </div>
         </div>
 
         {/* 4 Main Feature Buttons — overlap hero */}
@@ -133,13 +141,13 @@ export default function Home() {
               <div className="w-10 h-10 bg-blue-500 group-hover:bg-white/20 rounded-xl flex items-center justify-center mb-4 transition">
                 <AlertTriangle className="w-5 h-5 text-white" />
               </div>
-              <div className="text-xs text-blue-300 group-hover:text-blue-100 font-semibold uppercase tracking-widest mb-1 transition">Tool 1</div>
-              <h3 className="text-white font-bold text-lg mb-2">Calculate Risk</h3>
+              <div className="text-xs text-blue-300 group-hover:text-blue-100 font-semibold uppercase tracking-widest mb-1 transition">Risk Dashboard</div>
+              <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.isMyChildInDanger}</h3>
               <p className="text-slate-400 group-hover:text-blue-100 text-sm leading-relaxed transition">
                 Real-time climate risk assessment for your child's age and location.
               </p>
-              <div className="mt-4 flex items-center gap-1 text-blue-400 group-hover:text-white text-sm font-semibold transition">
-                Open Dashboard <ChevronRight className="w-4 h-4" />
+              <div dir="auto" className="mt-4 flex items-center gap-1 text-blue-400 group-hover:text-white text-sm font-semibold transition">
+                {t.checkNow} <ChevronRight className="w-4 h-4" />
               </div>
             </Link>
 
@@ -148,8 +156,8 @@ export default function Home() {
               <div className="w-10 h-10 bg-red-500 group-hover:bg-white/20 rounded-xl flex items-center justify-center mb-4 transition">
                 <Heart className="w-5 h-5 text-white" />
               </div>
-              <div className="text-xs text-red-300 group-hover:text-red-100 font-semibold uppercase tracking-widest mb-1 transition">Tool 2</div>
-              <h3 className="text-white font-bold text-lg mb-2">Health Advisor</h3>
+              <div className="text-xs text-red-300 group-hover:text-red-100 font-semibold uppercase tracking-widest mb-1 transition">Health Advisor</div>
+              <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.myChildIsSick}</h3>
               <p className="text-slate-400 group-hover:text-red-100 text-sm leading-relaxed transition">
                 Describe symptoms in any language — voice or text. AI guides next steps.
               </p>
@@ -163,8 +171,8 @@ export default function Home() {
               <div className="w-10 h-10 bg-violet-500 group-hover:bg-white/20 rounded-xl flex items-center justify-center mb-4 transition">
                 <Camera className="w-5 h-5 text-white" />
               </div>
-              <div className="text-xs text-violet-300 group-hover:text-violet-100 font-semibold uppercase tracking-widest mb-1 transition">Tool 3</div>
-              <h3 className="text-white font-bold text-lg mb-2">Vision Analyzer</h3>
+              <div className="text-xs text-violet-300 group-hover:text-violet-100 font-semibold uppercase tracking-widest mb-1 transition">Photo Analyzer</div>
+              <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.sendAPhoto}</h3>
               <p className="text-slate-400 group-hover:text-violet-100 text-sm leading-relaxed transition">
                 Upload a photo of flood damage, rash, or environment — Gemini analyzes it.
               </p>
@@ -179,7 +187,7 @@ export default function Home() {
                 <Map className="w-5 h-5 text-white" />
               </div>
               <div className="text-xs text-emerald-300 group-hover:text-emerald-100 font-semibold uppercase tracking-widest mb-1 transition">Live Data</div>
-              <h3 className="text-white font-bold text-lg mb-2">Global Risk Map</h3>
+              <h3 dir="auto" className="text-white font-bold text-lg mb-2">{t.worldMap}</h3>
               <p className="text-slate-400 group-hover:text-emerald-100 text-sm leading-relaxed transition">
                 Real-time world heatmap of child climate risk across 66 countries.
               </p>
@@ -338,14 +346,14 @@ export default function Home() {
             Select your country, enter your child's age, and get an instant AI-powered climate risk assessment and personalized action plan.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Link href="/dashboard" className="bg-blue-500 hover:bg-blue-400 text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2 shadow-lg">
-              <AlertTriangle className="w-4 h-4" /> Calculate Risk
+            <Link href="/dashboard" dir="auto" className="bg-blue-500 hover:bg-blue-400 text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2 shadow-lg">
+              <AlertTriangle className="w-4 h-4" /> {t.isMyChildInDanger}
             </Link>
-            <Link href="/health" className="bg-red-600 hover:bg-red-500 text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2">
-              <Heart className="w-4 h-4" /> Health Advisor
+            <Link href="/health" dir="auto" className="bg-red-600 hover:bg-red-500 text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2">
+              <Heart className="w-4 h-4" /> {t.myChildIsSick}
             </Link>
-            <Link href="/heatmap" className="border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2">
-              <Map className="w-4 h-4" /> Global Map
+            <Link href="/heatmap" dir="auto" className="border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition inline-flex items-center gap-2">
+              <Map className="w-4 h-4" /> {t.worldMap}
             </Link>
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-500">

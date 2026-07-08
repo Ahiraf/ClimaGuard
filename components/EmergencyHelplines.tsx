@@ -2,6 +2,7 @@
 
 import { Phone, Siren } from "lucide-react";
 import { getEmergencyContacts } from "@/lib/emergencyContacts";
+import { useUIStrings } from "@/lib/useUIStrings";
 
 type Props = {
   countryCode: string;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function EmergencyHelplines({ countryCode, countryName, flag, compact = false, theme = "light" }: Props) {
+  const { t } = useUIStrings();
   const data = getEmergencyContacts(countryCode);
   const dark = theme === "dark";
 
@@ -37,9 +39,9 @@ export default function EmergencyHelplines({ countryCode, countryName, flag, com
           <Siren className="w-4 h-4 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className={`font-bold ${titleColor} text-sm`}>Emergency Helplines</h3>
-          <p className={`text-xs ${subTextColor}`}>
-            {flag} {countryName} · Works offline · Save these numbers
+          <h3 dir="auto" className={`font-bold ${titleColor} text-sm`}>{t.emergencyNumbers}</h3>
+          <p dir="auto" className={`text-xs ${subTextColor}`}>
+            {flag} {countryName} · {t.tapToCall} · {t.worksOffline}
           </p>
         </div>
       </div>
@@ -51,7 +53,7 @@ export default function EmergencyHelplines({ countryCode, countryName, flag, com
       >
         <Phone className="w-5 h-5" />
         <div className="flex-1 min-w-0">
-          <div className="text-xs uppercase tracking-wider opacity-80">Call now</div>
+          <div dir="auto" className="text-xs uppercase tracking-wider opacity-80">{t.callNow}</div>
           <div className="font-bold text-base">{data.general.label} · {data.general.number}</div>
         </div>
         <span className="text-xs bg-white/20 px-2 py-1 rounded-full font-semibold">TAP</span>
