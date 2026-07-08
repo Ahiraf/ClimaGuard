@@ -6,8 +6,10 @@ import LanguagePicker from "./LanguagePicker";
 import { useUIStrings } from "@/lib/useUIStrings";
 
 // One consistent top nav for every tool page (dashboard, health, photo, map),
-// so a parent can jump directly between tools instead of going Home first. The
-// active tool is highlighted; the language selector stays reachable everywhere.
+// so a parent can jump directly between tools. Layout is overlap-proof at every
+// width: the logo is pinned left, the language selector pinned right, and the
+// tool links live in a horizontally-scrollable strip in between — so long
+// non-English labels never collide with the language picker.
 export default function ToolNav({ active }: { active?: "dashboard" | "health" | "vision" | "heatmap" | "offline" | "profile" }) {
   const { t } = useUIStrings();
   const links = [
@@ -21,19 +23,22 @@ export default function ToolNav({ active }: { active?: "dashboard" | "health" | 
 
   return (
     <nav className="bg-[#0f2844] sticky top-0 z-50 shadow-md">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-4 lg:gap-8 min-w-0">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <Shield className="text-blue-300 w-5 h-5" />
-            <span className="text-lg font-bold text-white tracking-tight">ClimaGuard</span>
-          </Link>
-          <div className="hidden lg:flex items-center gap-0.5">
+      <div className="max-w-6xl mx-auto pl-3 pr-2 sm:px-6 py-2.5 flex items-center gap-2 sm:gap-3">
+        {/* Logo — pinned left */}
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <Shield className="text-blue-300 w-5 h-5" />
+          <span className="text-base sm:text-lg font-bold text-white tracking-tight hidden sm:inline">ClimaGuard</span>
+        </Link>
+
+        {/* Tool links — scroll horizontally in the space that's left */}
+        <div className="flex-1 min-w-0 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-0.5 w-max">
             {links.map((l) => (
               <Link
                 key={l.key}
                 href={l.href}
                 dir="auto"
-                className={`text-sm px-3 py-2 rounded-lg font-semibold transition whitespace-nowrap ${
+                className={`text-sm px-3 py-1.5 rounded-lg font-semibold transition whitespace-nowrap ${
                   active === l.key ? "bg-white/15 text-white" : "text-slate-200 hover:text-white hover:bg-white/10"
                 }`}
               >
@@ -42,25 +47,10 @@ export default function ToolNav({ active }: { active?: "dashboard" | "health" | 
             ))}
           </div>
         </div>
+
+        {/* Language selector — pinned right, never overlapped */}
         <div className="shrink-0">
           <LanguagePicker theme="dark" />
-        </div>
-      </div>
-      {/* Mobile / tablet: horizontally-scrollable tool links */}
-      <div className="lg:hidden border-t border-white/10 overflow-x-auto no-scrollbar">
-        <div className="flex items-center gap-1 px-3 py-2 whitespace-nowrap">
-          {links.map((l) => (
-            <Link
-              key={l.key}
-              href={l.href}
-              dir="auto"
-              className={`text-xs px-3 py-1.5 rounded-lg font-semibold shrink-0 transition ${
-                active === l.key ? "bg-white/15 text-white" : "text-slate-300 hover:text-white bg-white/5"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
         </div>
       </div>
     </nav>

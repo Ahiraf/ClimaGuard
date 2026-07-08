@@ -20,7 +20,7 @@ export default function LanguagePicker({ theme = "dark" }: { theme?: "dark" | "l
         value={langName}
         onChange={(e) => setUILanguage(e.target.value)}
         aria-label="ভাষা · Language · اللغة · भाषा"
-        className={`appearance-none text-sm font-semibold rounded-lg pl-8 pr-7 py-2 focus:outline-none cursor-pointer ${
+        className={`appearance-none text-sm font-semibold rounded-lg pl-8 pr-7 py-2 focus:outline-none cursor-pointer max-w-[42vw] sm:max-w-[16rem] truncate ${
           dark
             ? "bg-white/10 border border-white/25 text-white focus:border-blue-400"
             : "bg-white border border-slate-200 text-slate-900 focus:ring-2 focus:ring-blue-500 shadow-sm"
