@@ -73,7 +73,19 @@ ${JSON.stringify(payload)}`;
       const model = client.getGenerativeModel({
         model: "gemini-2.5-flash",
         systemInstruction: SYSTEM,
-        generationConfig: { responseMimeType: "application/json", maxOutputTokens: 4096 },
+        // The full four-hazard guide translated into a multi-byte script (e.g.
+        // Bengali) is large. 2.5-flash spends part of its output budget on
+        // hidden "thinking" tokens, so at 4096 the JSON was truncated mid-string
+        // and every parse failed — silently dropping non-English users back to
+        // English. Turn thinking off (this is faithful translation, no reasoning
+        // needed) and give a generous ceiling so the JSON always completes.
+        generationConfig: {
+          responseMimeType: "application/json",
+          maxOutputTokens: 8192,
+          temperature: 0.2,
+          // @ts-expect-error thinkingConfig is valid for 2.5 models but not yet in this SDK's types
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       });
       const result = await model.generateContent(prompt);
       return result.response.text();
