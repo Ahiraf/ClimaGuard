@@ -15,6 +15,7 @@ export const EN_UI_SOURCE: UIStrings = {
   "tapToCall": "Tap a number to call",
   "worksOffline": "Works without internet",
   "callNow": "Call now",
+  "tap": "TAP",
   "heroTitle": "Keeping children safe from weather danger",
   "heroSub": "Floods, heat, storms, bad air — see if your child is safe and what to do. In your language. Free.",
   "cardRiskDesc": "See the danger near your home, for your child's age.",

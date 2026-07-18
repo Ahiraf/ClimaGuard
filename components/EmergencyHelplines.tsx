@@ -56,7 +56,15 @@ export default function EmergencyHelplines({ countryCode, countryName, flag, com
           <div dir="auto" className="text-xs uppercase tracking-wider opacity-80">{t.callNow}</div>
           <div className="font-bold text-base">{data.general.label} · {data.general.number}</div>
         </div>
-        <span className="text-xs bg-white/20 px-2 py-1 rounded-full font-semibold">TAP</span>
+        {/* Pointing hand + word in the parent's language, so a low-literacy
+            reader like Razia can see "press here" even without reading. */}
+        <span
+          dir="auto"
+          className="flex items-center gap-1 text-xs bg-white/20 px-2.5 py-1 rounded-full font-semibold shrink-0 animate-pulse"
+        >
+          <span aria-hidden className="text-base leading-none">👆</span>
+          {t.tap || "TAP"}
+        </span>
       </a>
 
       {/* Full list */}
