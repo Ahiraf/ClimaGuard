@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Volume2, Square, Loader2 } from "lucide-react";
 import { getLanguageName } from "@/lib/languages";
+import { getCachedAudio, putCachedAudio, ttsKey } from "@/lib/ttsCache";
 
 type Props = {
   text: string;
@@ -146,9 +147,18 @@ export default function SpeakButton({ text, langCode, label = "Read aloud", clas
   };
 
   // Play cached/neural audio; return true on success, false to fall back.
+  // Lookup order: in-memory (this session) → IndexedDB (persists, works offline)
+  // → network (/api/tts), which we then store for next time / offline use.
   const playNeural = async (): Promise<boolean> => {
-    const key = `${langCode ?? "en"}::${text}`;
+    const key = ttsKey(langCode ?? "en", text);
     let url = audioCache.get(key);
+    if (!url) {
+      const persisted = await getCachedAudio(key);
+      if (persisted) {
+        url = URL.createObjectURL(persisted);
+        audioCache.set(key, url);
+      }
+    }
     if (!url) {
       if (typeof navigator !== "undefined" && navigator.onLine === false) return false;
       try {
@@ -160,6 +170,7 @@ export default function SpeakButton({ text, langCode, label = "Read aloud", clas
         if (!res.ok) return false;
         const blob = await res.blob();
         if (!blob.size) return false;
+        void putCachedAudio(key, blob); // persist for offline replays
         url = URL.createObjectURL(blob);
         audioCache.set(key, url);
       } catch {

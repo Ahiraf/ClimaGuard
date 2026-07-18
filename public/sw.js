@@ -1,76 +1,120 @@
-const CACHE_NAME = "climaguard-v1";
-const STATIC_ASSETS = [
-  "/",
-  "/dashboard",
-  "/health",
-  "/offline",
-];
+// ClimaGuard service worker — makes the app open with no network so a parent in
+// a disaster zone can still reach the offline emergency guide, saved reports and
+// helpline numbers. Two caches: a small app shell precached on install, and a
+// runtime cache that keeps every page + JS chunk the user has loaded once.
+//
+// Strategy:
+//  • Next.js build assets (/_next/static/*, images, fonts) → cache-first
+//    (they are content-hashed and immutable, so this is safe and fast offline).
+//  • Page navigations → network-first, falling back to the cached page, then to
+//    the always-useful offline guide.
+//  • API calls (incl. POST /api/tts) → never touched here; the app handles
+//    offline behaviour itself (e.g. cached translations and read-aloud audio).
+
+const SHELL_CACHE = "climaguard-shell-v2";
+const RUNTIME_CACHE = "climaguard-runtime-v2";
+
+// Routes worth having on the very first offline launch. Added individually so a
+// single failure never aborts the whole precache (the old addAll bug).
+const APP_SHELL = ["/", "/dashboard", "/health", "/offline-guide", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)).catch(() => {})
+    caches.open(SHELL_CACHE).then((cache) =>
+      Promise.allSettled(APP_SHELL.map((url) => cache.add(url)))
+    )
   );
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((k) => k !== SHELL_CACHE && k !== RUNTIME_CACHE)
+            .map((k) => caches.delete(k))
+        )
+      )
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
+
+function isStaticAsset(url) {
+  return (
+    url.pathname.startsWith("/_next/static/") ||
+    url.pathname.startsWith("/icons/") ||
+    /\.(?:js|css|woff2?|ttf|png|jpg|jpeg|svg|webp|ico|json)$/.test(url.pathname)
+  );
+}
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
+  const url = new URL(request.url);
 
-  // Don't cache API routes or POST requests
-  if (request.method !== "GET" || request.url.includes("/api/")) return;
+  // Only handle same-origin GETs. Let the app deal with API/POST itself.
+  if (request.method !== "GET" || url.origin !== self.location.origin) return;
+  if (url.pathname.startsWith("/api/")) return;
 
+  // Immutable build assets: serve from cache first, fill the cache on miss.
+  if (isStaticAsset(url)) {
+    event.respondWith(
+      caches.match(request).then(
+        (cached) =>
+          cached ||
+          fetch(request).then((res) => {
+            if (res.ok) {
+              const clone = res.clone();
+              caches.open(RUNTIME_CACHE).then((c) => c.put(request, clone));
+            }
+            return res;
+          })
+      )
+    );
+    return;
+  }
+
+  // Page navigations: fresh when online, cached copy (or the offline guide) when not.
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((res) => {
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(RUNTIME_CACHE).then((c) => c.put(request, clone));
+          }
+          return res;
+        })
+        .catch(async () => {
+          return (
+            (await caches.match(request)) ||
+            (await caches.match("/offline-guide")) ||
+            (await caches.match("/")) ||
+            new Response(
+              "<!DOCTYPE html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" +
+                "<div style=\"font-family:sans-serif;text-align:center;padding:48px 20px\">" +
+                "<div style='font-size:3rem'>🛡️</div><h1 style='color:#16a34a'>ClimaGuard</h1>" +
+                "<p style='color:#6b7280'>You are offline. Open the app once with internet to save the emergency guide for offline use.</p></div>",
+              { headers: { "Content-Type": "text/html" }, status: 200 }
+            )
+          );
+        })
+    );
+    return;
+  }
+
+  // Everything else: network-first with a cache fallback.
   event.respondWith(
     fetch(request)
-      .then((response) => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+      .then((res) => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(RUNTIME_CACHE).then((c) => c.put(request, clone));
         }
-        return response;
+        return res;
       })
-      .catch(() =>
-        caches.match(request).then((cached) => {
-          if (cached) return cached;
-          // Fallback for navigation requests
-          if (request.mode === "navigate") {
-            return caches.match("/offline") || new Response(
-              `<!DOCTYPE html><html><head><title>ClimaGuard - Offline</title>
-              <meta name="viewport" content="width=device-width,initial-scale=1">
-              <style>body{font-family:sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f9fafb;text-align:center;padding:20px}
-              h1{color:#16a34a;font-size:2rem;margin-bottom:8px}.icon{font-size:4rem;margin-bottom:16px}p{color:#6b7280;max-width:400px;line-height:1.6}
-              .tip{background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:16px;margin-top:24px;max-width:400px;text-align:left}
-              .tip h3{color:#92400e;margin:0 0 8px 0;font-size:0.9rem}
-              .tip ul{margin:0;padding-left:20px;color:#78350f;font-size:0.85rem;line-height:1.8}</style>
-              </head><body>
-              <div class="icon">🛡️</div>
-              <h1>ClimaGuard</h1>
-              <p>You are currently offline. Your last saved risk report is available in the app's local storage.</p>
-              <p style="margin-top:8px;font-size:0.85rem;color:#9ca3af">Go back online to get updated climate risk analysis powered by Gemini AI.</p>
-              <div class="tip">
-                <h3>⚠️ Emergency Health Tips (Offline)</h3>
-                <ul>
-                  <li>High fever after floods → ORS + keep cool, seek care if above 39°C</li>
-                  <li>Heat exhaustion → shade, cool damp cloth on neck, small sips of water</li>
-                  <li>Breathing issues → damp cloth over nose, stay indoors</li>
-                  <li>Vomiting/diarrhea → ORS immediately, avoid solid food 2 hrs</li>
-                  <li>Heatstroke (unconscious + hot) → emergency services NOW</li>
-                </ul>
-              </div>
-              </body></html>`,
-              { headers: { "Content-Type": "text/html" } }
-            );
-          }
-          return new Response("Offline", { status: 503 });
-        })
-      )
+      .catch(() => caches.match(request))
   );
 });

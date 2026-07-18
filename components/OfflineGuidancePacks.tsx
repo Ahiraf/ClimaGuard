@@ -5,6 +5,8 @@ import { WifiOff, ChevronDown, Phone, Loader2 } from "lucide-react";
 import { OFFLINE_GUIDANCE, ageToBand, AGE_BAND_LABEL, AgeBand } from "@/lib/offlineGuidance";
 import { loadUserPrefs } from "@/lib/userPrefs";
 import { useUIStrings } from "@/lib/useUIStrings";
+import { getLanguageName } from "@/lib/languages";
+import { prefetchAudio } from "@/lib/ttsCache";
 import SpeakButton from "./SpeakButton";
 
 type Props = {
@@ -142,6 +144,28 @@ export default function OfflineGuidancePacks({ childAge, langCode }: Props) {
   }, [effectiveCode, langName]);
 
   const band = ageToBand(age);
+
+  // Warm the neural read-aloud cache while online so every hazard's audio plays
+  // in the clear native voice even offline. English uses the browser voice fine,
+  // so we only pre-fetch for translated languages (where the offline voice is
+  // the weak point). Runs quietly in the background, one clip at a time.
+  useEffect(() => {
+    if (effectiveCode === "en") return;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+    let cancelled = false;
+    (async () => {
+      const language = getLanguageName(effectiveCode);
+      for (const pack of content.packs) {
+        if (cancelled) return;
+        const steps = pack.steps[band];
+        if (!steps?.length) continue;
+        // Must match SpeakButton's speakText exactly so the cache keys line up.
+        const speakText = `${pack.hazard}. ${steps.join(". ")}. ${content.seekCareLead}: ${pack.callNow.join(", ")}.`;
+        await prefetchAudio(effectiveCode, speakText, language);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [content, band, effectiveCode]);
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
