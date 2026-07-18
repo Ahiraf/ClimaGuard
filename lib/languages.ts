@@ -157,6 +157,13 @@ export const getLanguageCode = (name: string): string =>
   ?? COUNTRIES.find((c) => c.language === name)?.languageCode
   ?? "en";
 
+// Reverse of getLanguageCode — the human language name for a BCP-47-ish code,
+// used to tell the neural TTS which language to speak. Falls back to English.
+export const getLanguageName = (code: string): string =>
+  SUPPORTED_LANGUAGES.find((l) => l.code === code)?.name
+  ?? COUNTRIES.find((c) => c.languageCode === code)?.language
+  ?? "English";
+
 // The most likely country for a chosen language — used as a sensible default so
 // that picking e.g. "Filipino" surfaces the Philippines' emergency numbers,
 // until the parent explicitly chooses a country of their own.
